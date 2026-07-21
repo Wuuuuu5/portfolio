@@ -10,7 +10,7 @@ export const site = {
   email: "josephwu5354@gmail.com",
   // Any link left as "" is hidden automatically.
   github: "https://github.com/Wuuuuu5",
-  linkedin: "https://linkedin.com/in/josephwu",
+  linkedin: "https://www.linkedin.com/in/joseph-wu-1741962bb/",
   resume: "",
   writing: "",
 } as const;
