@@ -1,0 +1,134 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  /* `backwards` holds it off-screen through the delay, so it drops in as the
+     intro curtain clears rather than sitting there during it. */
+  animation: dropIn 0.75s var(--ease) 1.2s backwards;
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+@keyframes dropIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+.stuck {
+  border-bottom-color: var(--line);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  height: 68px;
+}
+
+.brand {
+  font-family: var(--mono);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  animation: pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
+
+.links {
+  display: flex;
+  gap: 1.75rem;
+  margin-left: auto;
+  font-size: 0.875rem;
+  color: var(--fg-dim);
+}
+
+.links a {
+  position: relative;
+  transition: color 0.25s;
+}
+
+.links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 1px;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.3s var(--ease);
+}
+
+.links a:hover {
+  color: var(--fg);
+}
+
+.links a:hover::after {
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .links {
+    display: none;
+  }
+}
+
+.themeBtn {
+  margin-left: auto;
+  border: 1px solid var(--line-strong);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--fg-dim);
+  transition: 0.25s;
+}
+
+.themeBtn:hover {
+  color: var(--fg);
+  border-color: var(--accent);
+  transform: rotate(-18deg);
+}
+
+/* Both icons render; the active theme decides which one is shown. Doing this
+   in CSS means the button needs no React state and can't mismatch on hydrate. */
+.moon,
+.sun {
+  grid-area: 1 / 1;
+}
+
+.sun,
+:global(:root[data-theme="light"]) .moon {
+  display: none;
+}
+
+:global(:root[data-theme="light"]) .sun {
+  display: block;
+}

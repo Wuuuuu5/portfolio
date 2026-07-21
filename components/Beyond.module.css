@@ -1,0 +1,34 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card {
+  height: 100%;
+  background: var(--bg);
+  padding: 1.8rem 1.5rem;
+  transition: background 0.35s var(--ease);
+}
+
+.card:hover {
+  background: var(--bg-elev);
+}
+
+.label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.7rem;
+}
+
+.body {
+  color: var(--fg-dim);
+  font-size: 0.95rem;
+}

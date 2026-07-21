@@ -39,3 +39,31 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AI tooling — local assistant config, not part of the project
+.claude/
+.cursor/
+.aider*
+CLAUDE.md
+AGENTS.md
+.github/copilot-instructions.md
+
+# personal documents — never commit these to a public repo
+*.docx
+*.doc
+*.pdf
+resume*
+cv*
+Resume*
+CV*
+
+# ...except a resume you deliberately publish on the site.
+# Negations must come last: the final matching rule wins.
+!public/*.pdf
+
+# local scratch
+/tmp/
+/scratch/
+*.local
+.idea/
+.vscode/

@@ -1,0 +1,52 @@
+.contact {
+  text-align: center;
+  padding-block: clamp(5rem, 14vh, 9rem);
+}
+
+.heading {
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  max-width: 14ch;
+  margin-inline: auto;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.body {
+  color: var(--fg-dim);
+  max-width: 46ch;
+  margin: 1.4rem auto 2.4rem;
+}
+
+.mail {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: clamp(0.95rem, 2.4vw, 1.25rem);
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 0.3rem;
+  transition: 0.3s var(--ease);
+}
+
+.mail:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: 1.6rem;
+  margin-top: 2.6rem;
+  font-size: 0.88rem;
+  color: var(--fg-dim);
+  flex-wrap: wrap;
+}
+
+.socials a {
+  transition: color 0.25s;
+}
+
+.socials a:hover {
+  color: var(--accent);
+}

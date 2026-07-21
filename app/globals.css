@@ -1,40 +1,80 @@
+/* ---------- tokens ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #08080b;
+  --bg-elev: #0e0e13;
+  --line: #1e1e26;
+  --line-strong: #2c2c38;
+  --fg: #f2f2f5;
+  --fg-dim: #a1a1ad;
+  --fg-faint: #6b6b78;
+  --accent: #7c5cff;
+  --accent-2: #3ddad7;
+  --glow: rgba(124, 92, 255, 0.5);
+
+  --sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  --mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --step: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --maxw: 1160px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root[data-theme="light"] {
+  --bg: #fbfbfa;
+  --bg-elev: #ffffff;
+  --line: #e6e6e2;
+  --line-strong: #d2d2cc;
+  --fg: #111114;
+  --fg-dim: #55555f;
+  --fg-faint: #8a8a95;
+  --accent: #5b3df5;
+  --accent-2: #0f9c98;
+  --glow: rgba(91, 61, 245, 0.28);
+
+  color-scheme: light;
+}
+
+/* ---------- reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: var(--step);
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background 0.5s var(--ease), color 0.5s var(--ease);
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
 }
 
 a {
@@ -42,8 +82,102 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- ambient backdrop ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: -2;
+  pointer-events: none;
+  background: radial-gradient(38% 34% at 18% 12%, var(--glow), transparent 68%),
+    radial-gradient(32% 30% at 82% 8%, rgba(61, 218, 215, 0.22), transparent 70%),
+    radial-gradient(
+      40% 38% at 60% 92%,
+      rgba(124, 92, 255, 0.16),
+      transparent 72%
+    );
+  filter: blur(28px);
+  animation: drift 26s var(--ease) infinite alternate;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+}
+
+:root[data-theme="light"] body::after {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(-4%, 3%, 0) scale(1.12);
+  }
+}
+
+/* ---------- shared layout ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+section {
+  padding-block: clamp(4.5rem, 11vh, 8rem);
+  position: relative;
+}
+
+/* ---------- scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Delays matter as much as durations here: a staggered entrance with the
+     motion removed would otherwise just look like content arriving late. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+  }
   html {
-    color-scheme: dark;
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }
