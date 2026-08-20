@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import { site } from "@/lib/content";
 import "./globals.css";
 
@@ -11,6 +11,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+/** Headlines only. Tight and athletic — it carries the display sizes. */
+const display = Space_Grotesk({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -50,7 +57,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="dark"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${display.variable}`}
       suppressHydrationWarning
     >
       <head>

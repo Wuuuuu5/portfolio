@@ -1,4 +1,4 @@
-import { about, skills } from "@/lib/content";
+import { about, sections, skills } from "@/lib/content";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import styles from "./About.module.css";
@@ -6,7 +6,7 @@ import styles from "./About.module.css";
 export default function About() {
   return (
     <section id="about" className="wrap">
-      <SectionHeading num="03" title="About" />
+      <SectionHeading {...sections.about} />
       <div className={styles.cols}>
         <Reveal className={styles.prose}>
           {about.map((para, i) => (
@@ -14,7 +14,8 @@ export default function About() {
           ))}
         </Reveal>
 
-        <Reveal delay={90}>
+        <Reveal delay={90} className={styles.kit}>
+          <p className={styles.kitTitle}>Kit bag</p>
           {skills.map((group) => (
             <div key={group.group} className={styles.group}>
               <h3 className={styles.groupTitle}>{group.group}</h3>

@@ -1,0 +1,544 @@
+/* --- the stage -------------------------------------------------------------
+   One rally loops forever. RALLY is the master clock: the trail, the shuttle
+   and the impact ping all run on it, so they can never drift apart. */
+
+.stage {
+  --cw: clamp(200px, 24vw, 300px); /* court width */
+  --ch: calc(var(--cw) * 2.1967); /* 13.4m / 6.1m */
+  --sway-x: 0deg;
+  --sway-y: 0deg;
+
+  display: grid;
+  justify-items: center;
+  /* Headroom for the lift, which peaks above the far court's back line. */
+  gap: 1.6rem;
+}
+
+/* The court's actual footprint on screen once it's laid down: the tilt
+   foreshortens its length, and perspective widens the near end. The HUD is
+   pinned to this box, not to the section, so the chips sit on the court. */
+.scene {
+  position: relative;
+  width: calc(var(--cw) * 1.34);
+  height: calc(var(--ch) * 0.62);
+  perspective: 1500px;
+  isolation: isolate;
+}
+
+/* The hall light pooling on the court. */
+.scene::before {
+  content: "";
+  position: absolute;
+  inset: -8% -14%;
+  z-index: -1;
+  background: radial-gradient(
+    46% 44% at 50% 52%,
+    var(--glow-2),
+    transparent 72%
+  );
+  filter: blur(34px);
+}
+
+/* Absolutely centred rather than laid out by the grid: the floor is far taller
+   than its scene once you count its un-rotated height, and grid alignment
+   clamps overflowing items to the start edge instead of centring them. */
+.floor {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: calc(var(--ch) / -2);
+  margin-left: calc(var(--cw) / -2);
+  width: var(--cw);
+  height: var(--ch);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tilt)) rotateY(var(--sway-x)) rotateX(var(--sway-y));
+  transition: transform 0.9s var(--ease);
+  animation: courtIn 1.4s var(--ease) 1.15s backwards;
+}
+
+@keyframes courtIn {
+  from {
+    opacity: 0;
+    transform: rotateX(80deg) translateY(50px);
+  }
+}
+
+.lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.surface {
+  fill: var(--bg-court);
+  stroke: var(--line-strong);
+  stroke-width: 1.5;
+}
+
+/* --- chalk ---------------------------------------------------------------- */
+/* pathLength="1" is set in the markup so one dash length fits every line,
+   whatever its actual geometry — the whole court paints on in step. */
+.chalk rect,
+.chalk path {
+  fill: none;
+  stroke: var(--chalk);
+  stroke-width: 2.2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: paint 1.1s var(--ease) 1.5s forwards;
+}
+
+@keyframes paint {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.net {
+  fill: var(--fg-faint);
+  opacity: 0.55;
+  animation: fadeIn 0.6s var(--ease) 2.2s backwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+}
+
+/* --- tracking overlay ----------------------------------------------------- */
+/* The predicted path: always there, marching along like live telemetry. */
+.trailBase {
+  fill: none;
+  stroke: var(--accent-2);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 7 12;
+  opacity: 0.4;
+  animation: march 2.6s linear infinite, fadeIn 0.8s var(--ease) 2.2s backwards;
+}
+
+@keyframes march {
+  to {
+    stroke-dashoffset: -19;
+  }
+}
+
+/* The tracked path: drawn in step with the shuttle on the way out, then wiped
+   as it's returned. Keyframe stops match the rally's, so the head of the line
+   stays under the shuttle instead of running ahead of it. */
+.trail {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  filter: drop-shadow(0 0 6px var(--glow));
+  animation: trailDraw 6.4s ease-in-out 2.4s infinite;
+}
+
+@keyframes trailDraw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 1;
+  }
+  8% {
+    stroke-dashoffset: 0.78;
+  }
+  20% {
+    stroke-dashoffset: 0.53;
+  }
+  32% {
+    stroke-dashoffset: 0.27;
+  }
+  44%,
+  56% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  76%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+.marker circle {
+  fill: none;
+  stroke: var(--accent-2);
+  stroke-width: 2;
+  opacity: 0.85;
+  animation: ping 3.4s var(--ease) infinite;
+}
+
+.markerNear circle {
+  animation-delay: 1.1s;
+}
+
+.markerDot {
+  fill: var(--accent-2);
+  stroke: none;
+}
+
+@keyframes ping {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+.impact {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  opacity: 0;
+  transform-origin: 220px 509px;
+  animation: impact 6.4s linear 2.4s infinite;
+}
+
+/* Fires the instant the shuttle reaches the near court, at 44% of the rally. */
+@keyframes impact {
+  0%,
+  43% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(0.6);
+  }
+  60%,
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+/* --- the shuttle, flying a real arc ---------------------------------------
+ *
+ * .flight  — where the shuttle is on the court (its ground track)
+ * .lift    — how high above the court it is
+ * .billboard — cancels the court's tilt so the overlay faces the camera
+ *
+ * Both animations share a clock and their keyframe stops line up, so they read
+ * as one motion. Keeping height on its own element means the shadow can sit
+ * inside .flight and stay pinned to the floor.
+ *
+ * Nothing here animates opacity, and that is deliberate: an opacity below 1
+ * forces `transform-style` to compute to `flat`, which would collapse the
+ * court's 3D space and leave the billboard foreshortened. So instead of fading
+ * out and teleporting back, the shuttle plays a full two-way rally — smash out,
+ * lift back — and returns exactly where it started, which loops seamlessly. */
+.flight,
+.lift {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-style: preserve-3d;
+}
+
+.flight {
+  animation: rallyGround 6.4s ease-in-out 2.4s infinite;
+}
+
+.lift {
+  animation: rallyHeight 6.4s ease-in-out 2.4s infinite;
+}
+
+/* A shuttle's ground track is very nearly straight — all the curve in its
+   flight is height, which is why this and rallyHeight look so different. */
+@keyframes rallyGround {
+  /* smashed from the far court */
+  0% {
+    transform: translate3d(calc(var(--cw) * 0.24), calc(var(--ch) * 0.16), 0);
+  }
+  8% {
+    transform: translate3d(calc(var(--cw) * 0.32), calc(var(--ch) * 0.26), 0);
+  }
+  20% {
+    transform: translate3d(calc(var(--cw) * 0.44), calc(var(--ch) * 0.41), 0);
+  }
+  32% {
+    transform: translate3d(calc(var(--cw) * 0.58), calc(var(--ch) * 0.59), 0);
+  }
+  /* dug up in the near court */
+  44%,
+  48% {
+    transform: translate3d(calc(var(--cw) * 0.72), calc(var(--ch) * 0.76), 0);
+  }
+  56% {
+    transform: translate3d(calc(var(--cw) * 0.58), calc(var(--ch) * 0.59), 0);
+  }
+  68% {
+    transform: translate3d(calc(var(--cw) * 0.44), calc(var(--ch) * 0.41), 0);
+  }
+  80% {
+    transform: translate3d(calc(var(--cw) * 0.32), calc(var(--ch) * 0.26), 0);
+  }
+  /* back where the smash started */
+  92%,
+  100% {
+    transform: translate3d(calc(var(--cw) * 0.24), calc(var(--ch) * 0.16), 0);
+  }
+}
+
+/* Height never quite reaches zero: a shuttle is struck at racket height, and a
+   positive value also keeps the upright billboard clear of the floor plane,
+   which would otherwise intersect it and swallow the shuttle at each end.
+   The ceiling is set by the frame rather than by physics — the court's tilt
+   maps height almost 1:1 to screen-up while foreshortening its 13.4m length,
+   so anything taller than about 0.19 of the court's width flies off the top. */
+@keyframes rallyHeight {
+  /* struck at the top of a jump, then driven down */
+  0% {
+    transform: translateZ(calc(var(--cw) * 0.17));
+  }
+  8% {
+    transform: translateZ(calc(var(--cw) * 0.155));
+  }
+  20% {
+    transform: translateZ(calc(var(--cw) * 0.125));
+  }
+  32% {
+    transform: translateZ(calc(var(--cw) * 0.085));
+  }
+  44%,
+  48% {
+    transform: translateZ(calc(var(--cw) * 0.03));
+  }
+  /* the defensive lift, floating back over the net */
+  56% {
+    transform: translateZ(calc(var(--cw) * 0.12));
+  }
+  68% {
+    transform: translateZ(calc(var(--cw) * 0.17));
+  }
+  80% {
+    transform: translateZ(calc(var(--cw) * 0.185));
+  }
+  92%,
+  100% {
+    transform: translateZ(calc(var(--cw) * 0.17));
+  }
+}
+
+/* The shuttle's position on the floor, marked flat on the court. It sits in
+   the floor's plane with no counter-rotation, so perspective foreshortens it
+   into an ellipse on its own — and the gap between it and the shuttle above
+   is what makes the height legible. */
+.shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 13px;
+  height: 13px;
+  margin: -6.5px 0 0 -6.5px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  opacity: 0.45;
+}
+
+/* Cancels the court's tilt so the overlay faces the camera, then lifts itself
+   by half a box so the tracking box *stands on* the flight point rather than
+   straddling it — straddling would push its lower half through the floor. */
+.billboard {
+  --box: clamp(38px, 4.2vw, 50px);
+  position: relative;
+  width: 0;
+  height: 0;
+  display: grid;
+  /* The track has to be pinned to zero, not just the box. An auto track sizes
+     to its widest item — the label — and `place-items: center` would then
+     centre the shuttle on the middle of *that*, throwing it off its own
+     trajectory by half a label. A 0×0 cell puts the centre on the flight point. */
+  grid-template: 0 / 0;
+  place-items: center;
+  transform: rotateX(calc(var(--tilt) * -1))
+    translateY(calc(var(--box) * -0.5));
+  transform-origin: 50% 100%;
+}
+
+.shuttle {
+  grid-area: 1 / 1;
+  width: clamp(20px, 2.4vw, 28px);
+  height: auto;
+  /* The billboard's cell is 0×0 by design, and the global `svg { max-width:
+     100% }` reset would resolve that to a 0px shuttle. */
+  max-width: none;
+  color: var(--accent);
+  filter: drop-shadow(0 0 10px var(--glow));
+  animation: tumble 6.4s ease-in-out 2.4s infinite;
+}
+
+/* Cork first, always — it leads down-court through the smash, then flips at
+   the racket and leads back up through the lift. One full turn across the
+   rally, so the loop closes on the orientation it opened with. */
+@keyframes tumble {
+  0% {
+    transform: rotate(30deg);
+  }
+  20% {
+    transform: rotate(42deg);
+  }
+  44%,
+  48% {
+    transform: rotate(52deg);
+  }
+  56% {
+    transform: rotate(140deg);
+  }
+  68% {
+    transform: rotate(200deg);
+  }
+  80% {
+    transform: rotate(215deg);
+  }
+  92%,
+  100% {
+    transform: rotate(390deg);
+  }
+}
+
+.box {
+  grid-area: 1 / 1;
+  width: var(--box);
+  aspect-ratio: 1;
+  border: 1.5px solid var(--accent);
+  border-radius: 3px;
+  opacity: 0.8;
+  /* Corner ticks only, the way a detector draws them: two gradients that each
+     punch out a middle band, intersected so only the four corners survive. */
+  mask-image: linear-gradient(
+      90deg,
+      #000 0 28%,
+      transparent 28% 72%,
+      #000 72%
+    ),
+    linear-gradient(0deg, #000 0 28%, transparent 28% 72%, #000 72%);
+  mask-composite: intersect;
+  -webkit-mask-image: linear-gradient(
+      90deg,
+      #000 0 28%,
+      transparent 28% 72%,
+      #000 72%
+    ),
+    linear-gradient(0deg, #000 0 28%, transparent 28% 72%, #000 72%);
+  -webkit-mask-composite: source-in;
+}
+
+.boxLabel {
+  grid-area: 1 / 1;
+  /* Sits just above the box's top-left corner tick. */
+  transform: translate(calc(var(--box) * -0.5), calc(var(--box) * -0.5 - 9px));
+  justify-self: start;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--accent-ink);
+  background: var(--accent);
+  padding: 0.05rem 0.3rem;
+  border-radius: 2px;
+}
+
+/* --- HUD ------------------------------------------------------------------ */
+.hud {
+  width: calc(var(--cw) * 1.34);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fg-dim);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: fadeIn 0.8s var(--ease) 2s backwards;
+}
+
+.chip i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: ping 2s ease-in-out infinite;
+}
+
+.chipShot {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  animation-delay: 2.15s;
+}
+
+.caption {
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--fg-faint);
+  max-width: 36ch;
+  animation: fadeIn 0.9s var(--ease) 2.4s backwards;
+}
+
+/* Once the hero stacks, the court gets the full column instead of half of it. */
+@media (max-width: 980px) {
+  .stage {
+    --cw: clamp(200px, 56vw, 290px);
+  }
+  /* The telemetry bar is no longer bounded by the court's footprint, so let it
+     use the column and keep both chips on one line. */
+  .hud {
+    width: 100%;
+    max-width: 420px;
+  }
+}
+
+/* A rally that never stops is a rally nobody asked for. */
+@media (prefers-reduced-motion: reduce) {
+  .floor {
+    animation: none;
+  }
+  .chalk rect,
+  .chalk path {
+    stroke-dashoffset: 0;
+  }
+  .trail,
+  .trailBase,
+  .flight,
+  .lift,
+  .shuttle,
+  .impact,
+  .marker circle,
+  .chip i {
+    animation: none;
+  }
+  .trail {
+    stroke-dashoffset: 0;
+  }
+  /* Parked mid-smash, over the net, so the scene still reads as a rally. */
+  .flight {
+    transform: translate3d(calc(var(--cw) * 0.44), calc(var(--ch) * 0.41), 0);
+  }
+  .lift {
+    transform: translateZ(calc(var(--cw) * 0.125));
+  }
+}

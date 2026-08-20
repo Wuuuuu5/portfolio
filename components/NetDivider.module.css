@@ -1,0 +1,38 @@
+.net {
+  position: relative;
+  height: 58px;
+  pointer-events: none;
+  /* The net is strung between two posts: solid in the middle, gone at the walls. */
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 14%,
+    #000 86%,
+    transparent
+  );
+}
+
+.tape {
+  height: 3px;
+  background: var(--chalk);
+  opacity: 0.55;
+}
+
+.mesh {
+  height: calc(100% - 3px);
+  /* Two crossed gradients make the square mesh; it fades as it hangs. */
+  background-image: repeating-linear-gradient(
+      90deg,
+      var(--line-strong) 0 1px,
+      transparent 1px 11px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--line-strong) 0 1px,
+      transparent 1px 11px
+    );
+  mask-image: linear-gradient(#000, transparent 92%);
+  -webkit-mask-image: linear-gradient(#000, transparent 92%);
+  opacity: 0.75;
+}

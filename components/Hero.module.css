@@ -1,36 +1,59 @@
 .hero {
-  padding-block: clamp(4rem, 13vh, 9rem) clamp(4rem, 10vh, 7rem);
+  padding-block: clamp(2.5rem, 8vh, 5rem) 0;
   position: relative;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+  padding-block-end: clamp(3rem, 8vh, 5rem);
+}
+
+@media (max-width: 980px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
 }
 
 .eyebrow {
   font-family: var(--mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--fg-faint);
   display: flex;
-  align-items: center;
-  gap: 0.7rem;
+  align-items: flex-start;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
 
+/* A short chalk line, like the tick that starts a service court. Nudged down
+   to sit on the first line's midpoint, since the label can wrap on narrow
+   screens and centring it across two lines would leave it floating. */
 .eyebrow::before {
   content: "";
-  width: 38px;
-  height: 1px;
-  background: var(--line-strong);
+  width: 34px;
+  height: 2px;
+  margin-top: 0.7em;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--glow);
+  flex: none;
 }
 
 .title {
-  font-size: clamp(2.6rem, 7.5vw, 5.4rem);
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+  font-family: var(--display);
+  font-size: clamp(2.4rem, 4.7vw, 3.9rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
   font-weight: 600;
-  max-width: 16ch;
+  text-wrap: balance;
 }
 
 .grad {
+  position: relative;
   background: linear-gradient(
     102deg,
     var(--accent) 0%,
@@ -44,6 +67,28 @@
   animation: shimmer 7s linear infinite;
 }
 
+/* The chalk line under the accent words — a sideline, painted on. */
+.grad::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.04em;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+  opacity: 0.35;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: swipe 0.9s var(--ease) 1.9s forwards;
+}
+
+@keyframes swipe {
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @keyframes shimmer {
   to {
     background-position: 220% 0;
@@ -51,40 +96,40 @@
 }
 
 .lede {
-  margin-top: 1.9rem;
-  max-width: 56ch;
+  margin-top: 1.8rem;
+  max-width: 52ch;
   color: var(--fg-dim);
-  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem);
+  font-size: clamp(1rem, 0.94rem + 0.35vw, 1.16rem);
 }
 
 .cta {
   display: flex;
   flex-wrap: wrap;
   gap: 0.85rem;
-  margin-top: 2.6rem;
+  margin-top: 2.4rem;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.78rem 1.4rem;
+  padding: 0.8rem 1.45rem;
   border-radius: 999px;
   font-size: 0.92rem;
   font-weight: 500;
   border: 1px solid var(--line-strong);
-  transition: transform 0.3s var(--ease), background 0.3s, border-color 0.3s,
-    box-shadow 0.3s, color 0.3s;
+  transition: transform 0.35s var(--ease-shuttle), background 0.3s,
+    border-color 0.3s, box-shadow 0.35s, color 0.3s;
 }
 
 .btn:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
 }
 
 .btn svg {
   width: 15px;
   height: 15px;
-  transition: transform 0.3s var(--ease);
+  transition: transform 0.35s var(--ease-shuttle);
 }
 
 .btn:hover svg {
@@ -92,31 +137,33 @@
 }
 
 .primary {
-  background: var(--fg);
-  color: var(--bg);
-  border-color: var(--fg);
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  font-weight: 600;
 }
 
 .primary:hover {
-  box-shadow: 0 10px 34px -10px var(--glow);
+  box-shadow: 0 14px 38px -12px var(--accent);
 }
 
 .ghost:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--accent-2);
+  color: var(--accent-2);
 }
 
 .status {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  margin-top: 2.4rem;
+  margin-top: 2.2rem;
   font-family: var(--mono);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
   color: var(--fg-dim);
   border: 1px solid var(--line);
   border-radius: 999px;
-  padding: 0.35rem 0.85rem;
+  padding: 0.36rem 0.9rem;
   background: color-mix(in srgb, var(--bg-elev) 70%, transparent);
 }
 
@@ -136,5 +183,83 @@
   }
   50% {
     opacity: 0.4;
+  }
+}
+
+/* Stays after the copy when the columns collapse: on a phone the pitch should
+   land before the set piece does. */
+.visual {
+  min-width: 0;
+}
+
+/* --- scoreboard ----------------------------------------------------------- */
+.scoreWrap {
+  border-block: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-elev) 55%, transparent);
+}
+
+.score {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.stat {
+  padding: clamp(1.1rem, 2.4vw, 1.6rem) 0;
+  padding-inline-end: 1rem;
+  position: relative;
+}
+
+/* Chalk rules between the numbers, like the divisions on a scoresheet. */
+.stat + .stat {
+  padding-inline-start: clamp(1rem, 2.4vw, 2rem);
+}
+
+.stat + .stat::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 22%;
+  bottom: 22%;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.statValue {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 3.2vw, 2.15rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  color: var(--fg);
+}
+
+.statLabel {
+  margin-top: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  line-height: 1.4;
+}
+
+@media (max-width: 720px) {
+  .score {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Two columns: reset the single-row rules, then rule the grid as a 2×2 —
+     a vertical chalk line down the middle, a horizontal one across it. */
+  .stat + .stat {
+    padding-inline-start: 0;
+  }
+  .stat + .stat::before {
+    display: none;
+  }
+  .stat:nth-child(even) {
+    padding-inline-start: clamp(1rem, 5vw, 1.75rem);
+    border-left: 1px solid var(--line-strong);
+  }
+  .stat:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
   }
 }

@@ -1,7 +1,8 @@
 .marquee {
   border-block: 1px solid var(--line);
-  padding-block: 1.1rem;
+  padding-block: 1.15rem;
   overflow: hidden;
+  background: color-mix(in srgb, var(--bg-elev) 40%, transparent);
   mask-image: linear-gradient(
     90deg,
     transparent,
@@ -38,19 +39,29 @@
 
 .item {
   font-family: var(--mono);
-  font-size: 0.85rem;
-  color: var(--fg-faint);
-  letter-spacing: 0.05em;
+  font-size: 0.84rem;
+  color: var(--fg-dim);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 3.5rem;
-  margin-right: 3.5rem;
+  gap: 2.6rem;
+  margin-right: 2.6rem;
 }
 
-.item::after {
-  content: "◆";
+/* A shuttle between every item, tumbling slowly as the strip passes. */
+.sep {
+  width: 11px;
+  height: auto;
+  flex: none;
   color: var(--accent);
-  font-size: 0.55rem;
-  opacity: 0.6;
+  opacity: 0.75;
+  animation: tumble 9s linear infinite;
+}
+
+@keyframes tumble {
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -1,0 +1,46 @@
+.lines {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  /* Fades top and bottom so the lines never fight the content. */
+  mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+  -webkit-mask-image: linear-gradient(
+    transparent,
+    #000 18%,
+    #000 82%,
+    transparent
+  );
+}
+
+.lines span {
+  width: 1px;
+  height: 100%;
+  background: var(--chalk-faint);
+}
+
+/* The doubles sideline and its tramline partner, 0.46m apart at page scale. */
+.outer + .inner,
+.inner + .outer {
+  margin-left: 22px;
+}
+
+.inner + .inner {
+  margin-left: calc(var(--maxw) - 46px);
+}
+
+.outer {
+  background: var(--chalk-faint);
+}
+
+.inner {
+  opacity: 0.6;
+}
+
+@media (max-width: 1320px) {
+  .lines {
+    display: none;
+  }
+}

@@ -1,4 +1,4 @@
-import { experience } from "@/lib/content";
+import { experience, sections } from "@/lib/content";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import styles from "./Experience.module.css";
@@ -6,12 +6,8 @@ import styles from "./Experience.module.css";
 export default function Experience() {
   return (
     <section id="experience" className="wrap">
-      <SectionHeading
-        num="02"
-        title="Experience"
-        note="Shipping alongside other engineers, to a real client, on a deadline."
-      />
-      <div className={styles.list}>
+      <SectionHeading {...sections.experience} />
+      <div className={`${styles.list} court-panel`}>
         {experience.map((role, i) => (
           <Reveal key={role.org} delay={i * 80}>
             <article className={styles.role}>

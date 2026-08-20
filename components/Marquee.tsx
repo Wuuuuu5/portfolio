@@ -1,4 +1,5 @@
 import { stack } from "@/lib/content";
+import Shuttle from "./Shuttle";
 import styles from "./Marquee.module.css";
 
 export default function Marquee() {
@@ -11,6 +12,7 @@ export default function Marquee() {
         {items.map((item, i) => (
           <span key={`${item}-${i}`} className={styles.item}>
             {item}
+            <Shuttle className={styles.sep} />
           </span>
         ))}
       </div>

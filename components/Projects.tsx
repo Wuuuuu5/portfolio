@@ -1,4 +1,4 @@
-import { projects, type Project } from "@/lib/content";
+import { projects, sections, type Project } from "@/lib/content";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 import styles from "./Projects.module.css";
@@ -6,12 +6,8 @@ import styles from "./Projects.module.css";
 export default function Projects() {
   return (
     <section id="work" className="wrap">
-      <SectionHeading
-        num="01"
-        title="Things I've built"
-        note="Each one started as a problem I actually had. Two are still in progress — that's honest, not a disclaimer."
-      />
-      <div className={styles.grid}>
+      <SectionHeading {...sections.work} />
+      <div className={`${styles.grid} court-panel`}>
         {projects.map((project, i) => (
           <Reveal key={project.name} delay={i * 70}>
             <ProjectCard project={project} />
@@ -23,7 +19,7 @@ export default function Projects() {
 }
 
 function ProjectCard({ project }: { project: Project }) {
-  const { name, blurb, learned, tags, year, kind, href } = project;
+  const { name, blurb, learned, tags, year, kind, shot, href } = project;
 
   // Cards without a link render as a plain block so there's no dead anchor.
   const Tag = href ? "a" : "div";
@@ -33,7 +29,11 @@ function ProjectCard({ project }: { project: Project }) {
 
   return (
     <Tag className={styles.card} {...linkProps}>
-      <div>
+      <div className={styles.shot}>
+        <span className={styles.shotName}>{shot}</span>
+      </div>
+
+      <div className={styles.body}>
         <h3 className={styles.name}>
           {name}
           {href ? (
@@ -54,6 +54,7 @@ function ProjectCard({ project }: { project: Project }) {
           ))}
         </ul>
       </div>
+
       <div className={styles.meta}>
         {year}
         <br />

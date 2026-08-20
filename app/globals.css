@@ -1,39 +1,72 @@
-/* ---------- tokens ---------- */
+/* ==========================================================================
+   COURT — a badminton-themed design system.
+
+   The palette is taken straight off a match court: a dark green-black floor,
+   chalk sidelines, shuttle-lime for anything that moves, and net-teal as the
+   cool counterweight. Every surface in the site is either "floor" or "chalk".
+   ========================================================================== */
+
 :root {
-  --bg: #08080b;
-  --bg-elev: #0e0e13;
-  --line: #1e1e26;
-  --line-strong: #2c2c38;
-  --fg: #f2f2f5;
-  --fg-dim: #a1a1ad;
-  --fg-faint: #6b6b78;
-  --accent: #7c5cff;
-  --accent-2: #3ddad7;
-  --glow: rgba(124, 92, 255, 0.5);
+  /* floor */
+  --bg: #06100e;
+  --bg-elev: #0b1a17;
+  --bg-court: #0d2320;
+
+  /* chalk — court lines, at three weights */
+  --line: #16302b;
+  --line-strong: #234b43;
+  --chalk: rgba(233, 251, 240, 0.82);
+  --chalk-faint: rgba(233, 251, 240, 0.07);
+
+  /* ink */
+  --fg: #eaf6ef;
+  --fg-dim: #9db6ac;
+  --fg-faint: #64837a;
+
+  /* the shuttle, and the net */
+  --accent: #c9ff4d;
+  --accent-2: #19c8a4;
+  --accent-ink: #06100e; /* text that sits on top of --accent */
+  --glow: rgba(201, 255, 77, 0.34);
+  --glow-2: rgba(25, 200, 164, 0.22);
 
   --sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, sans-serif;
+  --display: var(--font-display), var(--font-geist-sans), -apple-system,
+    "Segoe UI", sans-serif;
   --mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --step: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
   --gutter: clamp(1.25rem, 5vw, 4rem);
-  --maxw: 1160px;
+  --maxw: 1180px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Shuttle physics: fast off the racket, floating at the top of the arc. */
+  --ease-shuttle: cubic-bezier(0.2, 0.9, 0.1, 1);
 
   color-scheme: dark;
 }
 
+/* Daylight court: chalk-white hall floor, deep green lines. */
 :root[data-theme="light"] {
-  --bg: #fbfbfa;
+  --bg: #f6f7f1;
   --bg-elev: #ffffff;
-  --line: #e6e6e2;
-  --line-strong: #d2d2cc;
-  --fg: #111114;
-  --fg-dim: #55555f;
-  --fg-faint: #8a8a95;
-  --accent: #5b3df5;
-  --accent-2: #0f9c98;
-  --glow: rgba(91, 61, 245, 0.28);
+  /* Enough green in it that the court reads as a surface, not just a hole. */
+  --bg-court: #dfe9d5;
+
+  --line: #dfe4d6;
+  --line-strong: #c3cdb6;
+  --chalk: rgba(16, 38, 32, 0.72);
+  --chalk-faint: rgba(16, 38, 32, 0.08);
+
+  --fg: #0d1f1a;
+  --fg-dim: #4a615a;
+  --fg-faint: #7d938b;
+
+  --accent: #3f8f00;
+  --accent-2: #0d8f77;
+  --accent-ink: #ffffff;
+  --glow: rgba(63, 143, 0, 0.2);
+  --glow-2: rgba(13, 143, 119, 0.16);
 
   color-scheme: light;
 }
@@ -84,7 +117,7 @@ a {
 
 ::selection {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
 }
 
 :focus-visible {
@@ -93,38 +126,46 @@ a {
   border-radius: 4px;
 }
 
-/* ---------- ambient backdrop ---------- */
+/* ---------- ambient: hall lighting ---------- */
 body::before {
   content: "";
   position: fixed;
   inset: -20%;
-  z-index: -2;
+  z-index: -3;
   pointer-events: none;
-  background: radial-gradient(38% 34% at 18% 12%, var(--glow), transparent 68%),
-    radial-gradient(32% 30% at 82% 8%, rgba(61, 218, 215, 0.22), transparent 70%),
-    radial-gradient(
-      40% 38% at 60% 92%,
-      rgba(124, 92, 255, 0.16),
-      transparent 72%
-    );
-  filter: blur(28px);
+  background: radial-gradient(34% 30% at 16% 6%, var(--glow), transparent 70%),
+    radial-gradient(30% 28% at 86% 14%, var(--glow-2), transparent 72%),
+    radial-gradient(46% 40% at 62% 96%, var(--glow-2), transparent 74%);
+  filter: blur(30px);
   animation: drift 26s var(--ease) infinite alternate;
 }
 
+/* ---------- ambient: racket string bed ----------
+   A 26px lattice, fading out toward the edges so it reads as texture rather
+   than as a grid. It's the strings you're looking through, not a wireframe. */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: -2;
   pointer-events: none;
-  opacity: 0.4;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
-}
-
-:root[data-theme="light"] body::after {
   opacity: 0.5;
-  mix-blend-mode: multiply;
+  background-image: repeating-linear-gradient(
+      90deg,
+      var(--chalk-faint) 0 1px,
+      transparent 1px 26px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--chalk-faint) 0 1px,
+      transparent 1px 26px
+    );
+  mask-image: radial-gradient(70% 60% at 50% 30%, #000 20%, transparent 100%);
+  -webkit-mask-image: radial-gradient(
+    70% 60% at 50% 30%,
+    #000 20%,
+    transparent 100%
+  );
 }
 
 @keyframes drift {
@@ -147,6 +188,18 @@ body::after {
 section {
   padding-block: clamp(4.5rem, 11vh, 8rem);
   position: relative;
+}
+
+/* ---------- shared: the court card ----------
+   Panels across the site share one treatment: floor-colored, chalk-edged, with
+   a service line that paints itself down the left edge on hover. */
+.court-panel {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
 }
 
 /* ---------- scroll reveal ---------- */

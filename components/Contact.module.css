@@ -1,42 +1,100 @@
 .contact {
-  text-align: center;
   padding-block: clamp(5rem, 14vh, 9rem);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Half a court receding into the dark behind the closing pitch. */
+.contact::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 -35% 0;
+  height: 70%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    50% 60% at 50% 100%,
+    var(--glow),
+    transparent 70%
+  );
+  opacity: 0.55;
+  filter: blur(24px);
+}
+
+.inner {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.4rem;
+}
+
+.mark {
+  width: 15px;
+  height: auto;
+  filter: drop-shadow(0 0 8px var(--glow));
 }
 
 .heading {
-  font-size: clamp(2rem, 6vw, 3.6rem);
-  max-width: 14ch;
-  margin-inline: auto;
-  letter-spacing: -0.035em;
+  font-family: var(--display);
+  font-size: clamp(2.1rem, 6vw, 3.8rem);
+  max-width: 15ch;
+  letter-spacing: -0.04em;
   font-weight: 600;
-  line-height: 1.05;
+  line-height: 1.03;
+  text-wrap: balance;
 }
 
 .body {
   color: var(--fg-dim);
   max-width: 46ch;
-  margin: 1.4rem auto 2.4rem;
+  margin: 1.4rem 0 2.6rem;
 }
 
 .mail {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
   font-family: var(--mono);
-  font-size: clamp(0.95rem, 2.4vw, 1.25rem);
-  border-bottom: 1px solid var(--line-strong);
-  padding-bottom: 0.3rem;
-  transition: 0.3s var(--ease);
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--bg-elev) 65%, transparent);
+  transition: 0.35s var(--ease-shuttle);
+}
+
+.mail svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.35s var(--ease-shuttle);
 }
 
 .mail:hover {
   border-color: var(--accent);
   color: var(--accent);
-  letter-spacing: 0.02em;
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px -18px var(--accent);
+}
+
+.mail:hover svg {
+  transform: translateX(4px);
 }
 
 .socials {
   display: flex;
   justify-content: center;
-  gap: 1.6rem;
+  gap: 1.8rem;
   margin-top: 2.6rem;
   font-size: 0.88rem;
   color: var(--fg-dim);
@@ -44,9 +102,25 @@
 }
 
 .socials a {
+  position: relative;
   transition: color 0.25s;
+}
+
+.socials a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  height: 1px;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.35s var(--ease);
 }
 
 .socials a:hover {
   color: var(--accent);
+}
+
+.socials a:hover::after {
+  width: 100%;
 }

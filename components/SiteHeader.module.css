@@ -18,9 +18,10 @@
   }
 }
 
+/* Once it sticks, the bottom edge reads as the net tape stretched across. */
 .stuck {
-  border-bottom-color: var(--line);
-  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  border-bottom-color: var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 74%, transparent);
 }
 
 .nav {
@@ -39,25 +40,17 @@
   gap: 0.55rem;
 }
 
-.dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
-  animation: pulse 2.6s ease-in-out infinite;
+.mark {
+  width: 17px;
+  height: auto;
+  color: var(--accent);
+  filter: drop-shadow(0 0 8px var(--glow));
+  transition: transform 0.5s var(--ease-shuttle);
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.45;
-    transform: scale(0.8);
-  }
+/* A flick of the wrist on hover. */
+.brand:hover .mark {
+  transform: rotate(-22deg) translateY(-2px);
 }
 
 .links {
@@ -92,7 +85,7 @@
   width: 100%;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 760px) {
   .links {
     display: none;
   }
@@ -115,6 +108,100 @@
   color: var(--fg);
   border-color: var(--accent);
   transform: rotate(-18deg);
+}
+
+/* --- mobile menu ---------------------------------------------------------- */
+/* Hidden entirely on desktop, where .links already does the job. */
+.menuBtn {
+  display: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  cursor: pointer;
+  place-items: center;
+  align-content: center;
+  justify-items: center;
+  gap: 5px;
+  margin-left: 0.6rem;
+  transition: border-color 0.25s;
+}
+
+.menuBtn:hover {
+  border-color: var(--accent);
+}
+
+.bar {
+  width: 15px;
+  height: 1.5px;
+  background: var(--fg-dim);
+  border-radius: 2px;
+  transition: transform 0.35s var(--ease), background 0.25s;
+}
+
+/* Open: the two strokes cross, like a racket face. */
+.menuBtn[aria-expanded="true"] .bar {
+  background: var(--accent);
+}
+
+.menuBtn[aria-expanded="true"] .bar:first-child {
+  transform: translateY(3.25px) rotate(45deg);
+}
+
+.menuBtn[aria-expanded="true"] .bar:last-child {
+  transform: translateY(-3.25px) rotate(-45deg);
+}
+
+/* Closed, the sheet is `hidden` so its links stay out of the tab order. That
+   also means it goes from display:none to displayed, which transitions can't
+   animate — hence an animation on the links rather than a transition. */
+.sheet {
+  display: none;
+  flex-direction: column;
+  padding: 0.25rem var(--gutter) 1.75rem;
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.sheet a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  font-family: var(--display);
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.sheetOpen a {
+  animation: sheetIn 0.45s var(--ease) backwards;
+}
+
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.sheetNum {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+
+@media (max-width: 760px) {
+  .menuBtn {
+    display: grid;
+  }
+  .sheet:not([hidden]) {
+    display: flex;
+  }
 }
 
 /* Both icons render; the active theme decides which one is shown. Doing this

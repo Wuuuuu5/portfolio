@@ -24,6 +24,25 @@ export const hero = {
   status: "Seeking 2026 SWE internships",
 } as const;
 
+/**
+ * The court diagram in the hero. Badminton is the through-line of this site
+ * because it's the through-line of the work — the CV project came off the court.
+ */
+export const rally = {
+  label: "Rally in progress",
+  shot: "Jump smash",
+  caption:
+    "A stylised take on the shuttle tracker below — the project that started all this.",
+} as const;
+
+/** The four numbers on the player card. Keep them true and keep them short. */
+export const stats: { value: string; label: string }[] = [
+  { value: "2026", label: "Graduating" },
+  { value: "3 yrs", label: "Captain & head coach" },
+  { value: "8", label: "Engineers shipped with" },
+  { value: "3", label: "Projects in flight" },
+];
+
 /** Scrolls across the page under the hero. Only what you'd defend in an interview. */
 export const stack: string[] = [
   "Python",
@@ -36,6 +55,37 @@ export const stack: string[] = [
   "Git",
 ];
 
+/**
+ * Section headers. `kicker` is the badminton framing, `title` is the plain-English
+ * one — the theme sits on top of the content, never in place of it.
+ */
+export const sections = {
+  work: {
+    num: "01",
+    kicker: "The rally",
+    title: "Things I've built",
+    note: "Each one started as a problem I actually had. Two are still in progress — that's honest, not a disclaimer.",
+  },
+  experience: {
+    num: "02",
+    kicker: "Match play",
+    title: "Experience",
+    note: "Shipping alongside other engineers, to a real client, on a deadline.",
+  },
+  about: {
+    num: "03",
+    kicker: "The player",
+    title: "About",
+    note: "",
+  },
+  beyond: {
+    num: "04",
+    kicker: "Off court",
+    title: "Beyond the code",
+    note: "Study, plus the years of captaining teams that taught me most of what I know about working with people.",
+  },
+} as const;
+
 export type Project = {
   name: string;
   /** What it does, then the hardest part and how you solved it. */
@@ -45,6 +95,8 @@ export type Project = {
   tags: string[];
   year: string;
   kind: string;
+  /** Two-word badminton shot name used as the card's index label. */
+  shot: string;
   /** Repo or live demo. Leave "" and the card renders without a link. */
   href?: string;
 };
@@ -59,6 +111,7 @@ export const projects: Project[] = [
     tags: ["Python", "OpenCV", "YOLOv8"],
     year: "2025 — present",
     kind: "Personal · In progress",
+    shot: "Smash",
     href: "",
   },
   {
@@ -70,6 +123,7 @@ export const projects: Project[] = [
     tags: ["React", "Node.js", "Express", "PostgreSQL"],
     year: "2025 — present",
     kind: "Personal · In progress",
+    shot: "Clear",
     href: "",
   },
   {
@@ -81,6 +135,7 @@ export const projects: Project[] = [
     tags: ["Python", "HTML", "CSS"],
     year: "2025",
     kind: "University · Team of 3",
+    shot: "Drive",
     href: "",
   },
 ];
@@ -143,6 +198,7 @@ export const beyond: { label: string; body: string }[] = [
 ];
 
 export const contact = {
+  kicker: "Match point",
   heading: "Looking for a 2026 internship.",
   body: "Backend or full-stack, in Auckland or remote. If you've got a team that reviews code carefully, I'd like to talk.",
 } as const;
