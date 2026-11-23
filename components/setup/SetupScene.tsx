@@ -24,8 +24,9 @@ type Props = {
   reducedMotion: boolean;
 };
 
-/** Turn the player a little so the first view is three-quarter, not flat on. */
-const START_TURN = -0.45;
+/** Turn the player a little so the first view is three-quarter, not flat on,
+    with their racket (right) side toward the camera. */
+const START_TURN = 0.45;
 
 /**
  * Projects the active item's anchor to screen pixels each time a frame is
