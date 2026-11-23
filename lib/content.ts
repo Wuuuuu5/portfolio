@@ -5,21 +5,16 @@
 
 export const site = {
   name: "Joseph Wu",
-  /** Shown beside the name in the header, footer and browser tab. */
+  /** The hero swaps to this on hover; also beside the name in the header,
+      footer and browser tab. */
   nameZh: "吴卓熙",
   handle: "joseph.wu",
-  role: "CS Student · Auckland, New Zealand",
   email: "josephwu5354@gmail.com",
   // Any link left as "" is hidden automatically.
   github: "https://github.com/Wuuuuu5",
   linkedin: "https://www.linkedin.com/in/joseph-wu-1741962bb/",
   resume: "",
   writing: "",
-} as const;
-
-export const hero = {
-  headline: "I build things end to end, then keep going until they work.",
-  lede: "Computer Science student at the University of Auckland, graduating 2026. I work across React and TypeScript on the front end and Node, Python and PostgreSQL behind it — and I'm looking for a backend or full-stack internship where I'll get my code properly reviewed.",
 } as const;
 
 /** Scrolls across the page under the hero. Only what you'd defend in an interview. */
