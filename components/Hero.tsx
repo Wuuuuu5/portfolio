@@ -49,13 +49,6 @@ export default function Hero() {
               Get in touch
             </a>
           </Reveal>
-
-          <Reveal delay={LOADER_MS + 360}>
-            <p className={styles.status}>
-              <i aria-hidden="true" />
-              {hero.status}
-            </p>
-          </Reveal>
         </div>
 
         <Reveal className={styles.visual} delay={LOADER_MS + 120}>

@@ -21,7 +21,6 @@ export const hero = {
   headlineAccent: "end to end",
   headlineAfter: ", then keep going until they work.",
   lede: "Computer Science student at the University of Auckland, graduating 2026. I work across React and TypeScript on the front end and Node, Python and PostgreSQL behind it — and I'm looking for a backend or full-stack internship where I'll get my code properly reviewed.",
-  status: "Seeking 2026 SWE internships",
 } as const;
 
 /**
