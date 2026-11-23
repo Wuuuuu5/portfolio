@@ -48,6 +48,22 @@
   --animate-load: load 1.1s var(--ease) forwards;
   --animate-call: fade-in 0.7s var(--ease) 0.45s backwards;
 
+  /* Hero headline accent: a slow colour sweep, and the chalk line that
+     paints itself under it once the curtain has lifted. */
+  --animate-shimmer: shimmer 7s linear infinite;
+  --animate-swipe: swipe 0.9s var(--ease) 1.9s forwards;
+
+  @keyframes shimmer {
+    to {
+      background-position: 220% 0;
+    }
+  }
+  @keyframes swipe {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
   /* Slides up and out, then takes itself out of the layer entirely. */
   @keyframes lift {
     to {
