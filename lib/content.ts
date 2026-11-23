@@ -8,6 +8,8 @@ export const site = {
   /** The hero swaps to this on hover; also beside the name in the header,
       footer and browser tab. */
   nameZh: "吴卓熙",
+  /** One line under the name in the hero. */
+  tagline: "Computer Science Student @ University of Auckland",
   handle: "joseph.wu",
   email: "josephwu5354@gmail.com",
   // Any link left as "" is hidden automatically.
