@@ -10,8 +10,9 @@ type Flight = { dir: "right" | "left"; id: number };
 const WIPE = "transition-[clip-path] duration-1100 ease-[cubic-bezier(0.65,0,0.35,1)]";
 
 /**
- * My name as a rally, seen side-on: it stands on a chalk floor line with a
- * net in the middle, and a shuttle waits on the floor at the left.
+ * My name as a rally, seen side-on: a small court sits just below it (a
+ * chalk floor line with a low net in the middle, kept clear of the letters),
+ * and a shuttle waits on the floor at the left.
  *
  * Hover it (mouse), tap it (touch) or Tab to it (keyboard) and the shuttle
  * is hit up over the net to the far baseline, wiping "Joseph Wu" into
@@ -54,12 +55,12 @@ export default function NameSwap() {
       {/* ---------- the court, behind the letters ---------- */}
       <span aria-hidden="true" className="pointer-events-none absolute inset-0">
         {/* Floor: a chalk line under the name, with a baseline tick at each end. */}
-        <span className="absolute -inset-x-[0.2em] top-[calc(100%+0.08em)] h-[max(2px,0.025em)] bg-line-strong" />
-        <span className="absolute -left-[0.2em] top-[calc(100%+0.08em)] h-[0.12em] w-[max(2px,0.025em)] -translate-y-full bg-line-strong" />
-        <span className="absolute -right-[0.2em] top-[calc(100%+0.08em)] h-[0.12em] w-[max(2px,0.025em)] -translate-y-full bg-line-strong" />
+        <span className="absolute -inset-x-[0.2em] top-[calc(100%+0.42em)] h-[max(2px,0.025em)] bg-line-strong" />
+        <span className="absolute -left-[0.2em] top-[calc(100%+0.42em)] h-[0.12em] w-[max(2px,0.025em)] -translate-y-full bg-line-strong" />
+        <span className="absolute -right-[0.2em] top-[calc(100%+0.42em)] h-[0.12em] w-[max(2px,0.025em)] -translate-y-full bg-line-strong" />
 
         {/* Net, side-on: posts, mesh and the white tape along the top. */}
-        <span className="absolute left-1/2 top-[calc(100%+0.08em-0.62em)] h-[0.62em] w-[0.16em] -translate-x-1/2 border-x-[max(2px,0.02em)] border-line-strong opacity-80 [background-image:repeating-linear-gradient(90deg,var(--line-strong)_0_1px,transparent_1px_0.04em),repeating-linear-gradient(0deg,var(--line-strong)_0_1px,transparent_1px_0.04em)]">
+        <span className="absolute left-1/2 top-[calc(100%+0.1em)] h-[0.32em] w-[0.16em] -translate-x-1/2 border-x-[max(2px,0.02em)] border-line-strong opacity-80 [background-image:repeating-linear-gradient(90deg,var(--line-strong)_0_1px,transparent_1px_0.04em),repeating-linear-gradient(0deg,var(--line-strong)_0_1px,transparent_1px_0.04em)]">
           <span className="absolute -inset-x-[max(2px,0.02em)] top-0 h-[max(3px,0.03em)] bg-chalk" />
         </span>
       </span>
@@ -88,7 +89,7 @@ export default function NameSwap() {
       <span
         key={flight?.id ?? "rest"}
         aria-hidden="true"
-        className={`pointer-events-none absolute top-[calc(100%+0.08em)] [transform:translate(-50%,-50%)] ${
+        className={`pointer-events-none absolute top-[calc(100%+0.42em)] [transform:translate(-50%,-50%)] ${
           flight ? (flight.dir === "right" ? "animate-fly-right" : "animate-fly-left") : "left-0"
         }`}
       >
