@@ -10,7 +10,6 @@ export default function SiteFooter() {
           <Shuttle className={styles.mark} />© {new Date().getFullYear()}{" "}
           {site.name}
         </span>
-        <span>Built with Next.js — no templates, no tracking.</span>
       </div>
     </footer>
   );
