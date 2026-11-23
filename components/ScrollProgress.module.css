@@ -1,15 +1,22 @@
+/* The bar runs along the bottom edge of the header (68px tall, see
+   SiteHeader.module.css), so it reads as the net tape under the nav and
+   there's room for the shuttle's feathers on both sides of the line.
+   The rail is 14px tall with the 2px line centred in it: 68 - 7 = 61. */
 .rail {
   position: fixed;
-  top: 0;
+  top: 61px;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 14px;
   z-index: 60;
   pointer-events: none;
 }
 
 .bar {
-  height: 100%;
+  position: absolute;
+  top: 6px;
+  left: 0;
+  height: 2px;
   width: 100%;
   transform: scaleX(0);
   transform-origin: left;
@@ -17,19 +24,23 @@
   box-shadow: 0 0 14px var(--glow);
 }
 
-/* Rides the leading edge of the bar. */
+/* Rides the leading edge of the bar, centred on the line (6px + 1px). */
 .marker {
   position: absolute;
-  top: 100%;
+  top: 7px;
   left: 0;
+  line-height: 0;
   opacity: 0;
   transition: opacity 0.3s var(--ease);
 }
 
+/* The shuttle is drawn cork-down; turning it -90° makes the cork lead to the
+   right, the way it's travelling. */
 .shuttle {
-  width: 13px;
-  height: auto;
+  width: 16px;
+  height: 16px;
   color: var(--accent);
+  transform: rotate(-90deg);
   filter: drop-shadow(0 0 8px var(--glow));
 }
 

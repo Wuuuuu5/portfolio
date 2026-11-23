@@ -17,7 +17,8 @@ export default function ScrollProgress() {
   useEffect(() => {
     const bar = barRef.current;
     const marker = markerRef.current;
-    if (!bar || !marker) return;
+    const rail = bar?.parentElement;
+    if (!bar || !marker || !rail) return;
 
     let frame = 0;
 
@@ -28,9 +29,12 @@ export default function ScrollProgress() {
       const raw = scrollable > 0 ? window.scrollY / scrollable : 0;
       const ratio = Math.min(Math.max(raw, 0), 1);
       bar.style.transform = `scaleX(${ratio})`;
-      // The marker travels the viewport width, offset back by half its own
-      // size so it sits centred on the bar's leading edge.
-      marker.style.transform = `translateX(calc(${ratio * 100}vw - 50%))`;
+      // The shuttle flies cork-first along the bar, with the cork tip on the
+      // bar's leading edge. It's measured against the rail rather than 100vw
+      // so it can't drift past the bar by the width of the scrollbar.
+      // 82% is where the cork tip sits across the (rotated) shuttle's box.
+      const x = ratio * rail.clientWidth;
+      marker.style.transform = `translate(calc(${x}px - 82%), -50%)`;
       marker.style.opacity = ratio > 0.005 ? "1" : "0";
     };
 
