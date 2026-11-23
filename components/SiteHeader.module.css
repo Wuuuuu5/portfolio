@@ -204,18 +204,17 @@
   }
 }
 
-/* Both icons render; the active theme decides which one is shown. Doing this
-   in CSS means the button needs no React state and can't mismatch on hydrate. */
-.moon,
-.sun {
-  grid-area: 1 / 1;
+/* The theme icon is a shuttlecock: cork down in light mode, flipped cork-up
+   in dark mode, with a shuttle-style flip between them. Driven purely by
+   <html data-theme> in CSS, so the button needs no React state and can't
+   mismatch on hydrate. */
+.themeShuttle {
+  width: 17px;
+  height: 17px;
+  color: var(--accent);
+  transition: transform 0.6s var(--ease-shuttle);
 }
 
-.sun,
-:global(:root[data-theme="light"]) .moon {
-  display: none;
-}
-
-:global(:root[data-theme="light"]) .sun {
-  display: block;
+:global(:root[data-theme="dark"]) .themeShuttle {
+  transform: rotate(180deg);
 }
