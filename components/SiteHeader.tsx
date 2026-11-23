@@ -64,6 +64,9 @@ export default function SiteHeader() {
         <a href="#top" className={styles.brand}>
           <Shuttle className={styles.mark} />
           {site.handle}
+          <span lang="zh-CN" className="font-sans font-normal tracking-normal text-fg-dim">
+            {site.nameZh}
+          </span>
         </a>
 
         <div className={styles.links}>

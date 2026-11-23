@@ -21,11 +21,11 @@ const display = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: `${site.name} — Software Engineer`,
+  title: `${site.name} ${site.nameZh} — Software Engineer`,
   description:
     "Computer Science student at the University of Auckland building full-stack and computer vision projects. Seeking a 2026 software engineering internship.",
   openGraph: {
-    title: `${site.name} — Software Engineer`,
+    title: `${site.name} ${site.nameZh} — Software Engineer`,
     description:
       "CS student in Auckland building full-stack and computer vision projects. Seeking a 2026 internship.",
     type: "website",

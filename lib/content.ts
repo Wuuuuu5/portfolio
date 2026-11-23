@@ -5,6 +5,8 @@
 
 export const site = {
   name: "Joseph Wu",
+  /** Shown beside the name in the header, footer and browser tab. */
+  nameZh: "吴卓熙",
   handle: "joseph.wu",
   role: "CS Student · Auckland, New Zealand",
   email: "josephwu5354@gmail.com",

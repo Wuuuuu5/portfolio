@@ -8,6 +8,9 @@ export default function SiteFooter() {
         <span className="inline-flex items-center gap-[0.55rem]">
           <Shuttle className="h-auto w-3 text-accent opacity-80" />© {new Date().getFullYear()}{" "}
           {site.name}
+          <span lang="zh-CN" className="font-sans tracking-normal">
+            {site.nameZh}
+          </span>
         </span>
       </div>
     </footer>
