@@ -175,6 +175,19 @@ export default function BadmintonSetup() {
           </div>
         </div>
       )}
+
+      <p className="mt-4 text-[0.8rem] text-fg-faint">
+        The voxel player was inspired by{" "}
+        <a
+          href="https://youyangfu.com"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="underline decoration-line-strong underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+        >
+          Frank Fu&apos;s portfolio
+        </a>
+        .
+      </p>
     </section>
   );
 }
