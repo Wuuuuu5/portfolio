@@ -48,6 +48,24 @@
   --animate-load: load 1.1s var(--ease) forwards;
   --animate-call: fade-in 0.7s var(--ease) 0.45s backwards;
 
+  /* Header: drops in as the curtain clears (`backwards` holds it off-screen
+     through the delay), and the mobile menu links slide up when it opens. */
+  --animate-drop-in: drop-in 0.75s var(--ease) 1.2s backwards;
+  --animate-sheet-in: sheet-in 0.45s var(--ease) backwards;
+
+  @keyframes drop-in {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+  @keyframes sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
   /* Slides up and out, then takes itself out of the layer entirely. */
   @keyframes lift {
     to {
