@@ -34,6 +34,24 @@
   --ease-flight: var(--ease-shuttle);
 }
 
+/* Animations, used as `animate-marquee`, `animate-tumble`… */
+@theme {
+  /* 34s per pass of the stack × 4 passes per half (REPEATS in Marquee.tsx). */
+  --animate-marquee: marquee 136s linear infinite;
+  --animate-tumble: tumble 9s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes tumble {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
 /* ==========================================================================
    COURT — a badminton-themed design system.
 
