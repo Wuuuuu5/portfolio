@@ -103,6 +103,18 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    name: "WEB3UOA Club Platform",
+    blurb:
+      "The official site for the University of Auckland's Web3 and blockchain club, built in a WDCC team of ten, where members sign in with their crypto wallet. I started on the front end — navigation, the dark/light theme, and redesigns of the About, Events, Partners and wallet pages — then moved to the backend: QR event check-in, where every member has a personal QR code that admins scan with their phone camera to mark attendance, and admin management with user search and an audit trail of who granted or revoked access.",
+    learned:
+      "That a check-in code is a security feature, not a UI one. My first version issued short-lived tokens per event and stored only their hash; we replaced it with a per-member QR secret, which turned out simpler and harder to share around.",
+    tags: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS"],
+    year: "2026",
+    kind: "WDCC · Team of 10",
+    shot: "Drop",
+    href: "https://github.com/UoaWDCC/web3",
+  },
+  {
     name: "AI Badminton Shot & Rally Analysis",
     blurb:
       "A computer vision system that detects and tracks shuttlecock trajectory from match footage, with player movement and shot detection built on a fine-tuned YOLOv8 model. It came out of my own competitive badminton — I wanted the analysis I could never get courtside.",
@@ -112,19 +124,19 @@ export const projects: Project[] = [
     year: "2025 — present",
     kind: "Personal · In progress",
     shot: "Smash",
-    href: "",
+    href: "https://github.com/Wuuuuu5/badminton_ai",
   },
   {
-    name: "Trip Planning Website",
+    name: "Travelog",
     blurb:
-      "Full-stack travel planner covering destination search, personalised itineraries and hotel booking. I designed the REST API in Node and Express over a normalised PostgreSQL schema, and built user authentication plus itinerary management with interactive maps.",
+      "A hotel price comparison app for New Zealand travel: search a destination, dates and guests, and compare prices across booking providers side by side. It started as a Vite and Express prototype, which I rebuilt from scratch on the Next.js App Router, moving the backend into route handlers, converting everything to strict TypeScript, and adding Supabase email sign-in. A GitHub Actions pipeline builds, type-checks and lints every pull request before it can merge. Next up: the results page, live pricing and a map view.",
     learned:
-      "How much downstream pain a normalised schema saves — getting the travel data model right first made the API almost fall out of it.",
-    tags: ["React", "Node.js", "Express", "PostgreSQL"],
+      "That auth is mostly about where code runs. Keeping a Supabase session valid across Server Components, Client Components and middleware meant cookie-based sessions refreshed on every request, not a token sitting in the browser.",
+    tags: ["Next.js", "TypeScript", "Supabase", "GitHub Actions"],
     year: "2025 — present",
     kind: "Personal · In progress",
     shot: "Clear",
-    href: "",
+    href: "https://github.com/Wuuuuu5/Travelog",
   },
   {
     name: "Food Ingredient Search",
