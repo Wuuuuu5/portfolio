@@ -39,11 +39,11 @@ export const metadata: Metadata = {
 const themeScript = `
 (function(){
   try {
+    // Light (white and blue) is the default; dark mode is opt-in via the toggle.
     var stored = localStorage.getItem("theme");
-    var prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
-    document.documentElement.dataset.theme = stored || (prefersLight ? "light" : "dark");
+    document.documentElement.dataset.theme = stored === "dark" ? "dark" : "light";
   } catch (e) {
-    document.documentElement.dataset.theme = "dark";
+    document.documentElement.dataset.theme = "light";
   }
 })();
 `;
@@ -56,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-theme="dark"
+      data-theme="light"
       className={`${geistSans.variable} ${geistMono.variable} ${display.variable}`}
       suppressHydrationWarning
     >

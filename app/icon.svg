@@ -5,15 +5,15 @@
     disappear at 16px, and sat on an opaque dark tile so the lime keeps its
     contrast against both light and dark browser chrome.
   -->
-  <rect width="32" height="32" rx="7" fill="#06100e"/>
+  <rect width="32" height="32" rx="7" fill="#0b1b3a"/>
   <g transform="rotate(-14 16 16) translate(0 -1.2)">
     <!-- feather skirt -->
-    <path d="M6.4 8.8C9.6 5.9 22.4 5.9 25.6 8.8L19.4 19.8h-6.8Z" fill="#c9ff4d"/>
+    <path d="M6.4 8.8C9.6 5.9 22.4 5.9 25.6 8.8L19.4 19.8h-6.8Z" fill="#5b9bff"/>
     <!-- individual feathers: invisible at tab size, but they keep it from
          looking like a flat wedge at 32px and up -->
     <path d="M16 7.2v12.6M11.3 7.7 13.9 19.8M20.7 7.7 18.1 19.8"
-          stroke="#06100e" stroke-width="0.9" opacity="0.5"/>
+          stroke="#0b1b3a" stroke-width="0.9" opacity="0.5"/>
     <!-- cork -->
-    <path d="M12.6 19.8h6.8v1.5a3.4 3.4 0 0 1-6.8 0Z" fill="#eaf6ef"/>
+    <path d="M12.6 19.8h6.8v1.5a3.4 3.4 0 0 1-6.8 0Z" fill="#eaf0ff"/>
   </g>
 </svg>

@@ -1,34 +1,36 @@
 /* ==========================================================================
    COURT — a badminton-themed design system.
 
-   The palette is taken straight off a match court: a dark green-black floor,
-   chalk sidelines, shuttle-lime for anything that moves, and net-teal as the
-   cool counterweight. Every surface in the site is either "floor" or "chalk".
+   The palette is a blue indoor hall. By default it's daylight: a white floor,
+   navy ink and a royal-blue shuttle for anything that moves, with sky blue as
+   the cool counterweight. Dark mode turns the lights down to a midnight-navy
+   floor. Every surface in the site is either "floor" or "chalk".
    ========================================================================== */
 
+/* Night court: midnight-navy floor, chalk lines, electric-blue shuttle. */
 :root {
   /* floor */
-  --bg: #06100e;
-  --bg-elev: #0b1a17;
-  --bg-court: #0d2320;
+  --bg: #050b1a;
+  --bg-elev: #0a1428;
+  --bg-court: #0e1d3a;
 
   /* chalk — court lines, at three weights */
-  --line: #16302b;
-  --line-strong: #234b43;
-  --chalk: rgba(233, 251, 240, 0.82);
-  --chalk-faint: rgba(233, 251, 240, 0.07);
+  --line: #16233f;
+  --line-strong: #24375e;
+  --chalk: rgba(230, 238, 255, 0.82);
+  --chalk-faint: rgba(230, 238, 255, 0.07);
 
   /* ink */
-  --fg: #eaf6ef;
-  --fg-dim: #9db6ac;
-  --fg-faint: #64837a;
+  --fg: #eaf0ff;
+  --fg-dim: #9fb0d0;
+  --fg-faint: #6f81a6;
 
   /* the shuttle, and the net */
-  --accent: #c9ff4d;
-  --accent-2: #19c8a4;
-  --accent-ink: #06100e; /* text that sits on top of --accent */
-  --glow: rgba(201, 255, 77, 0.34);
-  --glow-2: rgba(25, 200, 164, 0.22);
+  --accent: #5b9bff;
+  --accent-2: #38bdf8;
+  --accent-ink: #050b1a; /* text that sits on top of --accent */
+  --glow: rgba(91, 155, 255, 0.3);
+  --glow-2: rgba(56, 189, 248, 0.2);
 
   --sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, sans-serif;
@@ -46,27 +48,27 @@
   color-scheme: dark;
 }
 
-/* Daylight court: chalk-white hall floor, deep green lines. */
+/* Daylight court (the default): white hall floor, navy lines, royal blue. */
 :root[data-theme="light"] {
-  --bg: #f6f7f1;
-  --bg-elev: #ffffff;
-  /* Enough green in it that the court reads as a surface, not just a hole. */
-  --bg-court: #dfe9d5;
+  --bg: #ffffff;
+  --bg-elev: #f6f9ff;
+  /* Enough blue in it that the court reads as a surface, not just a hole. */
+  --bg-court: #e2ebff;
 
-  --line: #dfe4d6;
-  --line-strong: #c3cdb6;
-  --chalk: rgba(16, 38, 32, 0.72);
-  --chalk-faint: rgba(16, 38, 32, 0.08);
+  --line: #e1e8f5;
+  --line-strong: #c3d1ea;
+  --chalk: rgba(14, 33, 77, 0.72);
+  --chalk-faint: rgba(14, 33, 77, 0.07);
 
-  --fg: #0d1f1a;
-  --fg-dim: #4a615a;
-  --fg-faint: #7d938b;
+  --fg: #0b1b3a;
+  --fg-dim: #4a5b7a;
+  --fg-faint: #7686a6;
 
-  --accent: #3f8f00;
-  --accent-2: #0d8f77;
+  --accent: #1d4ed8;
+  --accent-2: #0369a1;
   --accent-ink: #ffffff;
-  --glow: rgba(63, 143, 0, 0.2);
-  --glow-2: rgba(13, 143, 119, 0.16);
+  --glow: rgba(29, 78, 216, 0.14);
+  --glow-2: rgba(3, 105, 161, 0.12);
 
   color-scheme: light;
 }
