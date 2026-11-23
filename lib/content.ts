@@ -138,18 +138,6 @@ export const projects: Project[] = [
     shot: "Clear",
     href: "https://github.com/Wuuuuu5/Travelog",
   },
-  {
-    name: "Food Ingredient Search",
-    blurb:
-      "Ingredient search platform built with two others over a semester, with user accounts, authentication, and a favouriting and comment system. We split the work and iterated in sprints across the build.",
-    learned:
-      "Working in a three-person codebase — that agreeing on interfaces early is what keeps parallel work from colliding at merge time.",
-    tags: ["Python", "HTML", "CSS"],
-    year: "2025",
-    kind: "University · Team of 3",
-    shot: "Drive",
-    href: "",
-  },
 ];
 
 export type Role = {
