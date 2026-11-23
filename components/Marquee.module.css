@@ -24,7 +24,9 @@
 .track {
   display: flex;
   width: max-content;
-  animation: scroll 34s linear infinite;
+  /* 34s per pass of the stack × 4 passes per half (REPEATS in Marquee.tsx),
+     so the words move at the same speed as before. */
+  animation: scroll 136s linear infinite;
 }
 
 .marquee:hover .track {
