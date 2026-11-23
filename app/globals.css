@@ -1,3 +1,39 @@
+@import "tailwindcss";
+
+/* `dark:` utilities follow the site's own toggle (<html data-theme="dark">),
+   not the operating system setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* The site's tokens as Tailwind theme values. They point at the CSS
+   variables below, so `bg-bg`, `text-fg-dim`, `border-line`, `text-accent`…
+   switch with light/dark automatically. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-elev: var(--bg-elev);
+  --color-bg-court: var(--bg-court);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-chalk: var(--chalk);
+  --color-chalk-faint: var(--chalk-faint);
+  --color-fg: var(--fg);
+  --color-fg-dim: var(--fg-dim);
+  --color-fg-faint: var(--fg-faint);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-ink: var(--accent-ink);
+  --color-glow: var(--glow);
+  --color-glow-2: var(--glow-2);
+
+  --font-sans: var(--sans);
+  --font-display: var(--display);
+  --font-mono: var(--mono);
+
+  /* `ease-soft`, `ease-flight`. Named apart from the --ease / --ease-shuttle
+     variables below so a theme variable never points at itself. */
+  --ease-soft: var(--ease);
+  --ease-flight: var(--ease-shuttle);
+}
+
 /* ==========================================================================
    COURT — a badminton-themed design system.
 
