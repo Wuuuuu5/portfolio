@@ -82,9 +82,16 @@
   padding: 0;
 }
 
+/* No `scroll-behavior: smooth` here: Lenis (components/SmoothScroll.tsx)
+   does the smoothing, and the two fight each other if both are on. */
 html {
-  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Anchor jumps without Lenis (reduced motion, touch) still clear the
+   sticky header. */
+section[id] {
+  scroll-margin-top: 68px;
 }
 
 body {

@@ -11,10 +11,12 @@ import About from "@/components/About";
 import Beyond from "@/components/Beyond";
 import Contact from "@/components/Contact";
 import SiteFooter from "@/components/SiteFooter";
+import SmoothScroll from "@/components/SmoothScroll";
 
 export default function Home() {
   return (
     <>
+      <SmoothScroll />
       <Loader />
       <ScrollProgress />
       <CourtLines />
