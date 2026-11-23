@@ -9,6 +9,7 @@ import Experience from "@/components/Experience";
 import NetDivider from "@/components/NetDivider";
 import About from "@/components/About";
 import Beyond from "@/components/Beyond";
+import BadmintonSetup from "@/components/BadmintonSetup";
 import Contact from "@/components/Contact";
 import SiteFooter from "@/components/SiteFooter";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -29,6 +30,7 @@ export default function Home() {
         <NetDivider />
         <About />
         <Beyond />
+        <BadmintonSetup />
         <Contact />
       </main>
       <SiteFooter />
