@@ -18,31 +18,9 @@ export const site = {
 } as const;
 
 export const hero = {
-  // The words wrapped in the gradient. Keep it short — two or three words.
-  headlineBefore: "I build things ",
-  headlineAccent: "end to end",
-  headlineAfter: ", then keep going until they work.",
+  headline: "I build things end to end, then keep going until they work.",
   lede: "Computer Science student at the University of Auckland, graduating 2026. I work across React and TypeScript on the front end and Node, Python and PostgreSQL behind it — and I'm looking for a backend or full-stack internship where I'll get my code properly reviewed.",
 } as const;
-
-/**
- * The court diagram in the hero. Badminton is the through-line of this site
- * because it's the through-line of the work — the CV project came off the court.
- */
-export const rally = {
-  label: "Rally in progress",
-  shot: "Jump smash",
-  caption:
-    "A stylised take on the shuttle tracker below — the project that started all this.",
-} as const;
-
-/** The four numbers on the player card. Keep them true and keep them short. */
-export const stats: { value: string; label: string }[] = [
-  { value: "2026", label: "Graduating" },
-  { value: "3 yrs", label: "Captain & head coach" },
-  { value: "8", label: "Engineers shipped with" },
-  { value: "3", label: "Projects in flight" },
-];
 
 /** Scrolls across the page under the hero. Only what you'd defend in an interview. */
 export const stack: string[] = [
