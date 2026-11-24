@@ -39,8 +39,8 @@ export const sections = {
   work: {
     num: "01",
     kicker: "The rally",
-    title: "Things I've built",
-    note: "Each one started as a problem I actually had. Two are still in progress — that's honest, not a disclaimer.",
+    title: "Projects",
+    note: "",
   },
   experience: {
     num: "02",
