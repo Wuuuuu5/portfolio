@@ -130,7 +130,7 @@ export const experience: Role[] = [
     org: "WDCC — Web Development for Community & Clients",
     when: "2025",
     blurb:
-      "Built a client-facing crypto wallet address search platform with a project manager and seven other engineers in an Agile team. I worked on the React and TypeScript front end, implementing wallet address search and lookup, and presented live demos to client stakeholders — explaining technical decisions, gathering feedback, and folding it into the UI across sprints.",
+      "I worked full stack as one of eight engineers, plus a project manager, building for a real client. Most of my time went into rebuilding the front end in React and TypeScript, and I built an internal QR code scanner that admins used to check people in and take attendance. I also worked directly with the client: I ran demos, talked them through why we'd built things the way we had, and took their feedback into the next sprint.",
     tags: ["React", "TypeScript", "Tailwind CSS", "Agile"],
   },
 ];
