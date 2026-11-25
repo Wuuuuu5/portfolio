@@ -20,21 +20,25 @@ const IDS = equipment.map((e) => e.id);
 
 /** Where the right hand holds the racket. */
 // RACKET_HAND [x +right/-left, y up from waist, z +forward]
-const RACKET_HAND: [number, number, number] = [1.5, -1.5, 6];
+// Out by the right hip at lower-chest height, in front of the body.
+const RACKET_HAND: [number, number, number] = [8, 3.5, 6.5];
 /** Which way the racket points from the hand (radians). 0,0,0 = straight up, face to the net. */
 // RACKET_ANGLE [tilt +head forward/-back, twist the face, lean +toward their left/-right]
-const RACKET_ANGLE: [number, number, number] = [0.35, 0, 0.12];
+// Diagonal across the chest (~65° off vertical), head up by the left shoulder,
+// strings turned partway to the camera.
+const RACKET_ANGLE: [number, number, number] = [0.5, 1, 1.2];
 /** Racket size: 0.8 keeps it about 40% of the player's height, like a real one. */
 const RACKET_SIZE = 0.8;
-/** Where on the racket the left hand holds, in voxels up from the right hand: 4.5 = lower shaft, 6 = middle. */
-const LEFT_HAND_AT = 6;
+/** Where on the racket the left hand holds, in voxels up from the right hand: 4.5 = lower shaft, 6 = middle, 7.5 = throat. */
+const LEFT_HAND_AT = 7.5;
 
 /** Which way each elbow points: (x +right/-left, y -down/+up, z +forward/-back).
     Bigger x (out to the side) and z (forward) = arms reaching out from the body;
     more -y = elbows tucked down by the ribs. */
 // RIGHT_POLE / LEFT_POLE [x out to side, y down, z forward]
-const RIGHT_POLE = new THREE.Vector3(0.4, -0.3, 1).normalize();
-const LEFT_POLE = new THREE.Vector3(-0.4, -0.3, 1).normalize();
+// Both elbows bent out to the sides and down, as in the reference grip.
+const RIGHT_POLE = new THREE.Vector3(1, -0.6, -0.2).normalize();
+const LEFT_POLE = new THREE.Vector3(-1.5, -0.5, 0.3).normalize();
 
 /** Arm lengths (voxels): shoulder→elbow, elbow→hand. */
 const UPPER = 7;
