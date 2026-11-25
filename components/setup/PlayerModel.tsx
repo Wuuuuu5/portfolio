@@ -4,7 +4,14 @@ import { useLayoutEffect, useRef, type ReactNode } from "react";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import { equipment, racketColours, type EquipmentId } from "@/lib/setup";
-import { Blocker, CELL, FlatMaterial, Part, VoxelBox, type ModelProps } from "./parts";
+import {
+  Blocker,
+  CELL,
+  FlatMaterial,
+  Part,
+  VoxelBox,
+  type ModelProps,
+} from "./parts";
 
 /** Whole voxels → metres, so every block's edges land on the voxel grid. */
 const v = (n: number) => n * CELL;
@@ -21,24 +28,44 @@ const IDS = equipment.map((e) => e.id);
 /** Where the right hand holds the racket. */
 // RACKET_HAND [x +right/-left, y up from waist, z +forward]
 // Out by the right hip at lower-chest height, in front of the body.
-const RACKET_HAND: [number, number, number] = [8, 3.5, 6.5];
+// Jump smash (from the stick drawing): hand back behind the body, just above shoulder height.
+const RACKET_HAND: [number, number, number] = [5.5, 11.5, -9.5];
 /** Which way the racket points from the hand (radians). 0,0,0 = straight up, face to the net. */
 // RACKET_ANGLE [tilt +head forward/-back, twist the face, lean +toward their left/-right]
 // Diagonal across the chest (~65° off vertical), head up by the left shoulder,
 // strings turned partway to the camera.
-const RACKET_ANGLE: [number, number, number] = [0.5, 1, 1.2];
+// Jump smash: racket pointing up, tipped a little forward, strings to the camera.
+const RACKET_ANGLE: [number, number, number] = [0.33, 1.57, 0];
 /** Racket size: 0.8 keeps it about 40% of the player's height, like a real one. */
 const RACKET_SIZE = 0.8;
 /** Where on the racket the left hand holds, in voxels up from the right hand: 4.5 = lower shaft, 6 = middle, 7.5 = throat. */
 const LEFT_HAND_AT = 7.5;
+/** Set to a point to let the left hand off the racket and reach there instead
+    (same voxels as RACKET_HAND); null = hold the shaft at LEFT_HAND_AT. */
+// LEFT_HAND_FREE [x +right/-left, y up from waist, z +forward] or null
+// Jump smash: arm straight out in front, rising toward the shuttle.
+const LEFT_HAND_FREE: [number, number, number] | null = [-5.5, 13, 12];
+
+/** How high the player is off the floor, in voxels (0 = standing). */
+const JUMP = 5;
+/** Turns the whole player on the spot (radians): 0 = facing the camera,
+    about ±1.57 = side-on. */
+const BODY_TURN = -1.5;
+/** Turns ONLY the torso (radians) on top of BODY_TURN. The head, racket,
+    hands and legs stay where they are; the arms re-bend from the moved
+    shoulders. -BODY_TURN = torso square to the camera. */
+const TORSO_TURN = 1.5;
+/** Undoes TORSO_TURN, for things placed in the torso that should stay put. */
+const UNTURN = new THREE.Euler(0, -TORSO_TURN, 0);
 
 /** Which way each elbow points: (x +right/-left, y -down/+up, z +forward/-back).
     Bigger x (out to the side) and z (forward) = arms reaching out from the body;
     more -y = elbows tucked down by the ribs. */
 // RIGHT_POLE / LEFT_POLE [x out to side, y down, z forward]
 // Both elbows bent out to the sides and down, as in the reference grip.
-const RIGHT_POLE = new THREE.Vector3(1, -0.6, -0.2).normalize();
-const LEFT_POLE = new THREE.Vector3(-1.5, -0.5, 0.3).normalize();
+// Jump smash: racket elbow back and down, reaching arm straight.
+const RIGHT_POLE = new THREE.Vector3(0, -1, -0.3).normalize();
+const LEFT_POLE = new THREE.Vector3(0, -1, 0).normalize();
 
 /** Arm lengths (voxels): shoulder→elbow, elbow→hand. */
 const UPPER = 7;
@@ -60,7 +87,11 @@ function reach(
   const u = v(UPPER);
   const f = v(FORE);
   const toTarget = target.clone().sub(shoulder.position);
-  const dist = THREE.MathUtils.clamp(toTarget.length(), Math.abs(u - f) + 1e-4, u + f - 1e-4);
+  const dist = THREE.MathUtils.clamp(
+    toTarget.length(),
+    Math.abs(u - f) + 1e-4,
+    u + f - 1e-4,
+  );
   const dir = toTarget.normalize();
 
   // Law of cosines: how far along the shoulder→target line the elbow sits,
@@ -68,13 +99,20 @@ function reach(
   const along = (u * u - f * f + dist * dist) / (2 * dist);
   const off = Math.sqrt(Math.max(u * u - along * along, 0));
   const bend = pole.clone().addScaledVector(dir, -pole.dot(dir)).normalize();
-  const elbowAt = shoulder.position.clone().addScaledVector(dir, along).addScaledVector(bend, off);
+  const elbowAt = shoulder.position
+    .clone()
+    .addScaledVector(dir, along)
+    .addScaledVector(bend, off);
 
   const upperDir = elbowAt.clone().sub(shoulder.position).normalize();
   shoulder.quaternion.setFromUnitVectors(DOWN, upperDir);
 
   // The forearm's direction, seen from inside the (now rotated) shoulder.
-  const foreDir = shoulder.position.clone().addScaledVector(dir, dist).sub(elbowAt).normalize();
+  const foreDir = shoulder.position
+    .clone()
+    .addScaledVector(dir, dist)
+    .sub(elbowAt)
+    .normalize();
   foreDir.applyQuaternion(shoulder.quaternion.clone().invert());
   elbow.quaternion.setFromUnitVectors(DOWN, foreDir);
 }
@@ -136,11 +174,19 @@ export default function PlayerModel({
     const rs = rightShoulder.current;
     const re = rightElbow.current;
     const torso = ls?.parent;
-    if (!ls || !le || !rs || !re || !torso || !grip.current || !root.current) return;
+    if (!ls || !le || !rs || !re || !torso || !grip.current || !root.current)
+      return;
     root.current.updateWorldMatrix(true, true);
-    reach(rs, re, new THREE.Vector3(...RACKET_HAND.map(v)), RIGHT_POLE);
-    const shaft = torso.worldToLocal(grip.current.getWorldPosition(new THREE.Vector3()));
-    reach(ls, le, shaft, LEFT_POLE);
+    // Hands and elbow directions are given unturned, so undo TORSO_TURN to
+    // keep them in the same place however the torso is turned.
+    const rightTarget = new THREE.Vector3(...RACKET_HAND.map(v)).applyEuler(
+      UNTURN,
+    );
+    reach(rs, re, rightTarget, RIGHT_POLE.clone().applyEuler(UNTURN));
+    const leftTarget = LEFT_HAND_FREE
+      ? new THREE.Vector3(...LEFT_HAND_FREE.map(v)).applyEuler(UNTURN)
+      : torso.worldToLocal(grip.current.getWorldPosition(new THREE.Vector3()));
+    reach(ls, le, leftTarget, LEFT_POLE.clone().applyEuler(UNTURN));
     invalidate();
   });
 
@@ -183,13 +229,23 @@ export default function PlayerModel({
     <Joint key={x} at={[v(x), 0, 0]} rotation={[hip, 0, 0]}>
       {skin(<VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-2), 0]} />)}
       <Joint at={[0, v(-4), 0]} rotation={[knee, 0, 0]}>
-        {skin(<VoxelBox size={[v(3), v(3), v(3)]} position={[0, v(-1.5), 0]} />)}
+        {skin(
+          <VoxelBox size={[v(3), v(3), v(3)]} position={[0, v(-1.5), 0]} />,
+        )}
         <Part id="socks" {...part}>
-          <VoxelBox size={[v(3), v(3), v(3)]} position={[0, v(-4.5), 0]} tone={white} />
+          <VoxelBox
+            size={[v(3), v(3), v(3)]}
+            position={[0, v(-4.5), 0]}
+            tone={white}
+          />
         </Part>
         <Joint at={[0, v(-6), 0]} rotation={[foot - (hip + knee), 0, 0]}>
           <Part id="shoes" {...part}>
-            <VoxelBox size={[v(3), v(2), v(5)]} position={[0, v(-1), v(1)]} tone={colors.accent} />
+            <VoxelBox
+              size={[v(3), v(2), v(5)]}
+              position={[0, v(-1), v(1)]}
+              tone={colors.accent}
+            />
           </Part>
         </Joint>
       </Joint>
@@ -204,31 +260,50 @@ export default function PlayerModel({
     <group ref={root} scale={[-SCALE, SCALE, SCALE]}>
       {/* ---------- the player: hips raised so both feet land on the floor ---------- */}
       {/* v(11.5) = hip height: raise if a foot sinks into the floor, lower if one floats */}
-      <group position={[0, v(11.5), 0]}>
+      <group position={[0, v(11.5 + JUMP), 0]} rotation={[0, BODY_TURN, 0]}>
         {/* +x is the racket side, which the mirror makes the player's right:
             right leg stepping forward with the foot flat, left leg behind up on
             its toes. Lifting that heel drops the toes, so its knee bends a
             little more to keep them on the floor. */}
         {/* leg(side, hip, knee, foot): hip -forward/+back · knee bigger = more bent · foot 0 flat, + heel up */}
-        {leg(2, -0.38, 0.15, 0)}
-        {leg(-2, 0.3, 0.36, 0.3)}
+        {/* Jump smash scissor kick: racket-side leg swung back and bent,
+            left leg driven forward with the knee up. */}
+        {leg(2, -0.25, 1.82, 1.4)}
+        {leg(-2, 0.28, 0.4, 0.6)}
 
+        {/* Shorts turn with the torso (TORSO_TURN); the legs stay put. */}
         <Part id="shorts" {...part}>
-          <VoxelBox size={[v(8), v(5), v(4)]} position={[0, v(2.5), 0]} tone={colors.fg} />
+          <group rotation={[0, TORSO_TURN, 0]}>
+            <VoxelBox
+              size={[v(8), v(5), v(4)]}
+              position={[0, v(2.5), 0]}
+              tone={colors.fg}
+            />
+          </group>
         </Part>
 
         {/* Torso: a slight lean in, racket shoulder turned forward. */}
         {/* torso [lean +forward/-back, twist +/-, tilt sideways] */}
-        <Joint at={[0, v(5), 0]} rotation={[0.1, -0.2, 0]}>
+        {/* Jump smash: spine straight up. */}
+        <Joint at={[0, v(5), 0]} rotation={[0, TORSO_TURN, 0]}>
           <Part id="jersey" {...part}>
             <VoxelBox size={[v(8), v(9), v(4)]} position={[0, v(4.5), 0]} />
           </Part>
 
           {/* Head, eyes level on the shuttle. */}
           {/* head [nod +down/-up, turn left/right, tilt sideways] */}
-          <Joint at={[0, v(9), 0]} rotation={[-0.05, 0.15, 0]}>
-            {skin(<VoxelBox size={[v(5), v(5), v(5)]} position={[0, v(2.5), 0]} />)}
-          </Joint>
+          {/* Jump smash: looking up at the shuttle. */}
+          {/* The outer group undoes TORSO_TURN so the head stays put. */}
+          <group position={[0, v(9), 0]} rotation={[0, -TORSO_TURN, 0]}>
+            <Joint at={[0, 0, 0]} rotation={[-0.2, 0, 0]}>
+              {skin(
+                <VoxelBox
+                  size={[v(5), v(5), v(5)]}
+                  position={[0, v(2.5), 0]}
+                />,
+              )}
+            </Joint>
+          </group>
 
           {/* Both arms: NO numbers to set here, they bend themselves to the
               racket (move it with RACKET_HAND / RACKET_ANGLE at the top). */}
@@ -236,12 +311,20 @@ export default function PlayerModel({
             <Part id="jersey" {...part}>
               <VoxelBox size={[v(3), v(3), v(3)]} position={[0, v(-1.5), 0]} />
             </Part>
-            {skin(<VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-5), 0]} />)}
+            {skin(
+              <VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-5), 0]} />,
+            )}
             <group ref={leftElbow} position={[0, v(-UPPER), 0]}>
               {skin(
                 <>
-                  <VoxelBox size={[v(3), v(5), v(3)]} position={[0, v(-2.5), 0]} />
-                  <VoxelBox size={[v(2), v(2), v(2)]} position={[0, v(-FORE), 0]} />
+                  <VoxelBox
+                    size={[v(3), v(5), v(3)]}
+                    position={[0, v(-2.5), 0]}
+                  />
+                  <VoxelBox
+                    size={[v(2), v(2), v(2)]}
+                    position={[0, v(-FORE), 0]}
+                  />
                 </>,
               )}
             </group>
@@ -251,12 +334,20 @@ export default function PlayerModel({
             <Part id="jersey" {...part}>
               <VoxelBox size={[v(3), v(3), v(3)]} position={[0, v(-1.5), 0]} />
             </Part>
-            {skin(<VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-5), 0]} />)}
+            {skin(
+              <VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-5), 0]} />,
+            )}
             <group ref={rightElbow} position={[0, v(-UPPER), 0]}>
               {skin(
                 <>
-                  <VoxelBox size={[v(3), v(5), v(3)]} position={[0, v(-2.5), 0]} />
-                  <VoxelBox size={[v(2), v(2), v(2)]} position={[0, v(-FORE), 0]} />
+                  <VoxelBox
+                    size={[v(3), v(5), v(3)]}
+                    position={[0, v(-2.5), 0]}
+                  />
+                  <VoxelBox
+                    size={[v(2), v(2), v(2)]}
+                    position={[0, v(-FORE), 0]}
+                  />
                 </>,
               )}
             </group>
@@ -266,32 +357,42 @@ export default function PlayerModel({
               Laid out pointing up from the right hand: grip, shaft, head.
               Twist is applied first, then lean, then tilt ("XZY"). */}
           <Part id="racket" {...part}>
-            <group position={RACKET_HAND.map(v) as [number, number, number]} rotation={[...RACKET_ANGLE, "XZY"]} scale={RACKET_SIZE}>
-              <mesh position={[0, v(1.5), 0]}>
-                <boxGeometry args={[v(0.8), v(4), v(0.8)]} />
-                <FlatMaterial tone={colors.fg} />
-              </mesh>
-              {/* Shaft and frame in my 100 ZZ's colourway (lib/setup.ts). */}
-              <mesh position={[0, v(6), 0]}>
-                <boxGeometry args={[v(0.3), v(5), v(0.3)]} />
-                <FlatMaterial tone={racketColours.shaft} />
-              </mesh>
-              {/* gold ring where the grip meets the shaft */}
-              <mesh position={[0, v(3.55), 0]}>
-                <boxGeometry args={[v(0.9), v(0.12), v(0.9)]} />
-                <FlatMaterial tone={racketColours.trim} />
-              </mesh>
-              {/* where the left hand holds (LEFT_HAND_AT) */}
-              <object3D ref={grip} position={[0, v(LEFT_HAND_AT), 0]} />
-              <group position={[0, v(11.9), 0]} scale={[1, 1.32, 1]}>
-                <mesh>
-                  <torusGeometry args={[v(2.6), v(0.22), 8, 48]} />
-                  <FlatMaterial tone={racketColours.frame} idleOpacity={0.6} />
+            {/* undoes TORSO_TURN so the racket stays put */}
+            <group rotation={[0, -TORSO_TURN, 0]}>
+              <group
+                position={RACKET_HAND.map(v) as [number, number, number]}
+                rotation={[...RACKET_ANGLE, "XZY"]}
+                scale={RACKET_SIZE}
+              >
+                <mesh position={[0, v(1.5), 0]}>
+                  <boxGeometry args={[v(0.8), v(4), v(0.8)]} />
+                  <FlatMaterial tone={colors.fg} />
                 </mesh>
-                <mesh>
-                  <circleGeometry args={[v(2.5), 40]} />
-                  <FlatMaterial tone={white} idleOpacity={0.08} />
+                {/* Shaft and frame in my 100 ZZ's colourway (lib/setup.ts). */}
+                <mesh position={[0, v(6), 0]}>
+                  <boxGeometry args={[v(0.3), v(5), v(0.3)]} />
+                  <FlatMaterial tone={racketColours.shaft} />
                 </mesh>
+                {/* gold ring where the grip meets the shaft */}
+                <mesh position={[0, v(3.55), 0]}>
+                  <boxGeometry args={[v(0.9), v(0.12), v(0.9)]} />
+                  <FlatMaterial tone={racketColours.trim} />
+                </mesh>
+                {/* where the left hand holds (LEFT_HAND_AT) */}
+                <object3D ref={grip} position={[0, v(LEFT_HAND_AT), 0]} />
+                <group position={[0, v(11.9), 0]} scale={[1, 1.32, 1]}>
+                  <mesh>
+                    <torusGeometry args={[v(2.6), v(0.22), 8, 48]} />
+                    <FlatMaterial
+                      tone={racketColours.frame}
+                      idleOpacity={0.6}
+                    />
+                  </mesh>
+                  <mesh>
+                    <circleGeometry args={[v(2.5), 40]} />
+                    <FlatMaterial tone={white} idleOpacity={0.08} />
+                  </mesh>
+                </group>
               </group>
             </group>
           </Part>
@@ -300,8 +401,16 @@ export default function PlayerModel({
 
       {/* ---------- racket bag, left on the floor ---------- */}
       <Part id="bag" {...part}>
-        <VoxelBox size={[v(10), v(4), v(4)]} position={[v(10), v(2), v(1)]} tone={colors.accent2} />
-        <VoxelBox size={[v(4), v(1), v(1)]} position={[v(10), v(4.5), v(1)]} tone={colors.fg} />
+        <VoxelBox
+          size={[v(10), v(4), v(4)]}
+          position={[v(10), v(2), v(1)]}
+          tone={colors.accent2}
+        />
+        <VoxelBox
+          size={[v(4), v(1), v(1)]}
+          position={[v(10), v(4.5), v(1)]}
+          tone={colors.fg}
+        />
       </Part>
     </group>
   );
