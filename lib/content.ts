@@ -77,7 +77,7 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    name: "WEB3UOA Club Platform",
+    name: "WEB3 UoA",
     blurb:
       "The official site for the University of Auckland's Web3 and blockchain club, built in a WDCC team of ten, where members sign in with their crypto wallet. I started on the front end — navigation, the dark/light theme, and redesigns of the About, Events, Partners and wallet pages — then moved to the backend: QR event check-in, where every member has a personal QR code that admins scan with their phone camera to mark attendance, and admin management with user search and an audit trail of who granted or revoked access.",
     tags: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS"],
