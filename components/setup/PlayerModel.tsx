@@ -44,7 +44,7 @@ const LEFT_HAND_AT = 7.5;
     (same voxels as RACKET_HAND); null = hold the shaft at LEFT_HAND_AT. */
 // LEFT_HAND_FREE [x +right/-left, y up from waist, z +forward] or null
 // Jump smash: arm straight out in front, rising toward the shuttle.
-const LEFT_HAND_FREE: [number, number, number] | null = [-5.5, 13, 12];
+const LEFT_HAND_FREE: [number, number, number] | null = [-7, 15.5, 16.5];
 
 /** How high the player is off the floor, in voxels (0 = standing). */
 const JUMP = 5;
