@@ -1,15 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import Matter from "matter-js";
 import { sections, site, skills } from "@/lib/content";
 import SectionHeading from "./SectionHeading";
 import { SERVICE_CARD } from "./cardStyles";
+
+const { Bodies, Composite, Constraint, Engine, Sleeping } = Matter;
 
 /**
  * closed    → the big zipped bag, waiting to be opened
  * unzipping → the pull runs along the zip and a racket slides up out of the bag
  * leaving   → the bag fades away
- * open      → the bag is gone and a block tower of skills builds up in its place
+ * open      → the bag is gone and a block tower of skills builds up in its place;
+ *             every block can be dragged out of the tower
  */
 type Phase = "closed" | "unzipping" | "leaving" | "open";
 
@@ -99,7 +109,8 @@ export default function KitBag() {
           inert={!open}
           className={`[grid-area:1/1] ${open ? "" : "invisible"}`}
         >
-          <Tower building={open} />
+          {/* Keyed on open, so closing the bag puts every dragged block back. */}
+          <Tower key={open ? "open" : "closed"} building={open} />
           <div className="mt-6 flex justify-center">
             <button
               ref={zipBack}
@@ -339,11 +350,19 @@ type Layer =
  * Top-down: each group's name is a long block lying across the tower, with its skills
  * underneath as rows of three short blocks. Gaps sit where a real tower would have them:
  * a lone block holds the middle, a pair holds the two sides.
+ *
+ * The short row (if any) goes first, right under the group's long block, which bridges
+ * its gaps. A full row stacked on a short one would have nothing under its ends and the
+ * physics would drop them.
  */
 const LAYERS: Layer[] = skills.flatMap((group) => {
   const rows: Layer[] = [];
-  for (let i = 0; i < group.items.length; i += 3) {
-    const chunk = group.items.slice(i, i + 3);
+  const short = group.items.length % 3;
+  // Where each row starts: the short row first, then full rows of three.
+  const cuts = short ? [0] : [];
+  for (let i = short; i < group.items.length; i += 3) cuts.push(i);
+  for (const [n, start] of cuts.entries()) {
+    const chunk = group.items.slice(start, cuts[n + 1] ?? group.items.length);
     const items =
       chunk.length === 1
         ? [null, chunk[0], null]
@@ -358,27 +377,71 @@ const LAYERS: Layer[] = skills.flatMap((group) => {
   ];
 });
 
-/** The order blocks land in: bottom layer first, left to right. */
-const DROP_ORDER = (() => {
-  const order = new Map<string, number>();
-  let n = 0;
-  for (let l = LAYERS.length - 1; l >= 0; l--) {
-    const layer = LAYERS[l];
-    if (layer.kind === "group") order.set(`${l}`, n++);
-    else layer.items.forEach((item, s) => item && order.set(`${l}-${s}`, n++));
-  }
-  return order;
-})();
-
 /** Same hover as the Projects and Experience cards: the service line and the hall light. */
-const BLOCK = `${SERVICE_CARD} flex h-11 items-center rounded-[5px] ring-1 ring-line`;
+const BLOCK = `${SERVICE_CARD} flex items-center rounded-[5px] ring-1 ring-line`;
 
-/** The stack is built one block at a time, from the ground up, each time the bag opens. */
+const BLOCK_H = 44;
+const GAP = 3;
+const MAX_TOWER_W = 432;
+/** Room above the tower to lift blocks into. */
+const HEADROOM = 150;
+const AREA_H = LAYERS.length * BLOCK_H + HEADROOM;
+
+type Spec = {
+  key: string;
+  /** Layer counted from the ground up. */
+  level: number;
+  /** Column in a row of three, or null for a long group block. */
+  slot: number | null;
+  className: string;
+  content: ReactNode;
+};
+
+/** Every block, in the order they land: bottom layer first, left to right. */
+const SPECS: Spec[] = LAYERS.flatMap((layer, l): Spec[] => {
+  const level = LAYERS.length - 1 - l;
+  if (layer.kind === "group") {
+    return [
+      {
+        key: `${l}`,
+        level,
+        slot: null,
+        className: `${BLOCK} justify-between px-4 font-mono text-[0.7rem] tracking-[0.2em] uppercase`,
+        content: (
+          <>
+            <span className="text-accent">{layer.label}</span>
+            <span className="text-fg-faint tabular-nums">
+              {String(layer.count).padStart(2, "0")}
+            </span>
+          </>
+        ),
+      },
+    ];
+  }
+  return layer.items.flatMap((item, slot): Spec[] =>
+    item
+      ? [
+          {
+            key: `${l}-${slot}`,
+            level,
+            slot,
+            className: `${BLOCK} justify-center px-2 text-center text-[0.84rem] leading-[1.15] text-fg-dim hover:text-fg`,
+            content: item,
+          },
+        ]
+      : [],
+  );
+}).sort((a, b) => a.level - b.level || (a.slot ?? 0) - (b.slot ?? 0));
+
+/**
+ * The stack is built one block at a time, from the ground up, each time the bag opens.
+ * Then it's a real stack: blocks have weight and friction, so you can pull one out,
+ * fling it, or knock the whole thing over.
+ */
 function Tower({ building }: { building: boolean }) {
-  const drop = (key: string) => ({
-    className: building ? "animate-block-drop" : "",
-    style: { "--i": DROP_ORDER.get(key) } as CSSProperties,
-  });
+  // Bumped on rebuild so the physics world starts again from scratch.
+  const [round, setRound] = useState(0);
+  const [moved, setMoved] = useState(false);
 
   return (
     <div className="grid justify-items-center">
@@ -391,40 +454,196 @@ function Tower({ building }: { building: boolean }) {
         ))}
       </ul>
 
-      <div aria-hidden="true" className="grid w-[min(100%,27rem)] gap-[3px]">
-        {LAYERS.map((layer, l) =>
-          layer.kind === "group" ? (
-            <div key={l} {...drop(`${l}`)}>
-              <div
-                className={`${BLOCK} justify-between px-4 font-mono text-[0.7rem] tracking-[0.2em] uppercase`}
-              >
-                <span className="text-accent">{layer.label}</span>
-                <span className="text-fg-faint tabular-nums">
-                  {String(layer.count).padStart(2, "0")}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div key={l} className="grid grid-cols-3 gap-[3px]">
-              {layer.items.map((item, s) =>
-                item ? (
-                  <div key={s} {...drop(`${l}-${s}`)}>
-                    <div
-                      className={`${BLOCK} justify-center px-2 text-center text-[0.84rem] leading-[1.15] text-fg-dim hover:text-fg`}
-                    >
-                      {item}
-                    </div>
-                  </div>
-                ) : (
-                  <span key={s} />
-                ),
-              )}
-            </div>
-          ),
-        )}
-      </div>
+      <p aria-hidden="true" className="mb-2 text-[0.85rem] text-fg-faint">
+        Grab a block and pull it out, or knock the tower over
+      </p>
+
+      <PhysicsStack
+        key={round}
+        building={building}
+        onGrab={() => setMoved(true)}
+      />
       {/* The table the tower stands on. */}
-      <div className="mt-1 h-px w-[min(100%,32rem)] bg-line-strong" />
+      <div className="h-px w-full bg-line-strong" />
+
+      <button
+        type="button"
+        onClick={() => {
+          setMoved(false);
+          setRound((r) => r + 1);
+        }}
+        tabIndex={moved ? 0 : -1}
+        className={`mt-4 cursor-pointer rounded-full border border-line-strong px-4 py-1.5 text-[0.85rem] text-fg-dim transition-[opacity,color,border-color] duration-300 hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-accent ${
+          moved ? "" : "pointer-events-none opacity-0"
+        }`}
+      >
+        Rebuild the tower
+      </button>
+    </div>
+  );
+}
+
+/**
+ * The physics runs in matter-js. React renders the blocks once, and every frame each
+ * block's element is moved to match its body. Dragging pins a spring between the
+ * pointer and the spot on the block you grabbed, so blocks swing and shove their
+ * neighbours like the real thing.
+ */
+function PhysicsStack({
+  building,
+  onGrab,
+}: {
+  building: boolean;
+  onGrab: () => void;
+}) {
+  const area = useRef<HTMLDivElement>(null);
+  const els = useRef<(HTMLDivElement | null)[]>([]);
+  const world = useRef<{
+    engine: Matter.Engine;
+    bodies: (Matter.Body | null)[];
+  } | null>(null);
+  const grab = useRef<Matter.Constraint | null>(null);
+
+  useEffect(() => {
+    const box = area.current;
+    if (!building || !box) return;
+
+    const W = box.clientWidth;
+    const towerW = Math.min(W, MAX_TOWER_W);
+    const left = (W - towerW) / 2;
+    const shortW = (towerW - 2 * GAP) / 3;
+
+    const engine = Engine.create({
+      enableSleeping: true,
+      positionIterations: 12,
+      velocityIterations: 10,
+    });
+    const bodies: (Matter.Body | null)[] = SPECS.map(() => null);
+    world.current = { engine, bodies };
+
+    // The floor, and walls at the edges of the section so nothing flies off the page.
+    const solid = { isStatic: true, friction: 1 };
+    Composite.add(engine.world, [
+      Bodies.rectangle(W / 2, AREA_H + 50, W + 400, 100, solid),
+      Bodies.rectangle(-50, 0, 100, AREA_H * 4, solid),
+      Bodies.rectangle(W + 50, 0, 100, AREA_H * 4, solid),
+    ]);
+
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const sizes = SPECS.map((spec) => (spec.slot === null ? towerW : shortW));
+    const timers = SPECS.map((spec, i) => {
+      const w = sizes[i];
+      const x =
+        spec.slot === null ? W / 2 : left + w / 2 + spec.slot * (w + GAP);
+      const y = AREA_H - spec.level * BLOCK_H - BLOCK_H / 2;
+      const el = els.current[i];
+      if (el) {
+        el.style.width = `${w}px`;
+        el.style.height = `${BLOCK_H}px`;
+      }
+      const spawn = () => {
+        const body = Bodies.rectangle(x, reduce ? y : y - 40, w, BLOCK_H, {
+          friction: 0.9,
+          frictionStatic: 1.5,
+          restitution: 0,
+          density: 0.002,
+          slop: 0.02,
+          chamfer: { radius: 4 },
+        });
+        bodies[i] = body;
+        Composite.add(engine.world, body);
+        if (el) el.style.visibility = "visible";
+      };
+      if (reduce) {
+        spawn();
+        return 0;
+      }
+      return window.setTimeout(spawn, i * 90);
+    });
+
+    let raf = 0;
+    const tick = () => {
+      Engine.update(engine, 1000 / 60);
+      bodies.forEach((body, i) => {
+        const el = els.current[i];
+        if (!body || !el) return;
+        el.style.transform = `translate(${body.position.x - sizes[i] / 2}px, ${
+          body.position.y - BLOCK_H / 2
+        }px) rotate(${body.angle}rad)`;
+      });
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+      Composite.clear(engine.world, false);
+      Engine.clear(engine);
+      world.current = null;
+      grab.current = null;
+    };
+  }, [building]);
+
+  const toWorld = (e: React.PointerEvent) => {
+    const rect = area.current!.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  };
+
+  const release = () => {
+    if (grab.current && world.current) {
+      Composite.remove(world.current.engine.world, grab.current);
+    }
+    grab.current = null;
+  };
+
+  return (
+    <div
+      ref={area}
+      aria-hidden="true"
+      className="relative w-full overflow-hidden"
+      style={{ height: AREA_H }}
+    >
+      {SPECS.map((spec, i) => (
+        <div
+          key={spec.key}
+          ref={(el) => {
+            els.current[i] = el;
+          }}
+          className={`${spec.className} invisible top-0 left-0 cursor-grab touch-none select-none will-change-transform active:cursor-grabbing`}
+          style={{ position: "absolute" }}
+          onPointerDown={(e) => {
+            const body = world.current?.bodies[i];
+            if (!body || !world.current || e.button !== 0) return;
+            release();
+            e.currentTarget.setPointerCapture(e.pointerId);
+            const point = toWorld(e);
+            Sleeping.set(body, false);
+            grab.current = Constraint.create({
+              pointA: point,
+              bodyB: body,
+              pointB: {
+                x: point.x - body.position.x,
+                y: point.y - body.position.y,
+              },
+              stiffness: 0.2,
+              damping: 0.1,
+              length: 0,
+            });
+            Composite.add(world.current.engine.world, grab.current);
+            onGrab();
+          }}
+          onPointerMove={(e) => {
+            if (grab.current) grab.current.pointA = toWorld(e);
+          }}
+          onPointerUp={release}
+          onPointerCancel={release}
+        >
+          {spec.content}
+        </div>
+      ))}
     </div>
   );
 }
