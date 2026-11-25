@@ -5,6 +5,7 @@ import SiteHeader from "@/components/SiteHeader";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import Projects from "@/components/Projects";
+import KitBag from "@/components/KitBag";
 import Experience from "@/components/Experience";
 import NetDivider from "@/components/NetDivider";
 import About from "@/components/About";
@@ -25,10 +26,11 @@ export default function Home() {
       <main>
         <Hero />
         <Marquee />
-        <Projects />
-        <Experience />
-        <NetDivider />
         <About />
+        <Experience />
+        <Projects />
+        <KitBag />
+        <NetDivider />
         <Beyond />
         <BadmintonSetup />
         <Contact />

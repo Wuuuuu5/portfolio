@@ -37,7 +37,7 @@ export const stack: string[] = [
  */
 export const sections = {
   work: {
-    num: "01",
+    num: "03",
     kicker: "The rally",
     title: "Projects",
     note: "",
@@ -49,13 +49,19 @@ export const sections = {
     note: "Shipping alongside other engineers, to a real client, on a deadline.",
   },
   about: {
-    num: "03",
+    num: "01",
     kicker: "The player",
     title: "About",
     note: "",
   },
-  beyond: {
+  skills: {
     num: "04",
+    kicker: "Kit bag",
+    title: "Tech stack",
+    note: "",
+  },
+  beyond: {
+    num: "05",
     kicker: "Off court",
     title: "Beyond the code",
     note: "Study, plus the years of captaining teams that taught me most of what I know about working with people.",

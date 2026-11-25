@@ -5,9 +5,9 @@ import { site } from "@/lib/content";
 import Shuttle from "./Shuttle";
 
 const links = [
-  { href: "#work", label: "Projects" },
-  { href: "#experience", label: "Experience" },
   { href: "#about", label: "About" },
+  { href: "#experience", label: "Experience" },
+  { href: "#work", label: "Projects" },
   { href: "#contact", label: "Contact" },
 ];
 
