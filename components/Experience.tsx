@@ -23,13 +23,15 @@ export default function Experience() {
                 </h3>
                 <p className="mt-1 text-[0.92rem] text-accent-2">{role.org}</p>
                 <p className="mt-4 max-w-[66ch] text-[0.98rem] text-fg-dim">{role.blurb}</p>
-                <ul className={TAG_LIST}>
-                  {role.tags.map((tag) => (
-                    <li key={tag} className={TAG}>
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
+                {role.tags.length > 0 ? (
+                  <ul className={TAG_LIST}>
+                    {role.tags.map((tag) => (
+                      <li key={tag} className={TAG}>
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </div>
             </article>
           </Reveal>

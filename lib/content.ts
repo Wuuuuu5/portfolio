@@ -123,7 +123,15 @@ export const experience: Role[] = [
     when: "2025",
     blurb:
       "I worked full stack as one of eight engineers, plus a project manager, building for a real client. Most of my time went into rebuilding the front end in React and TypeScript, and I built an internal QR code scanner that admins used to check people in and take attendance. I also worked directly with the client: I ran demos, talked them through why we'd built things the way we had, and took their feedback into the next sprint.",
-    tags: ["React", "TypeScript", "Tailwind CSS", "Agile"],
+    tags: ["React", "TypeScript", "Tailwind CSS"],
+  },
+  {
+    title: "Badminton Coach",
+    org: "Auckland Badminton Association",
+    when: "2025 — present",
+    blurb:
+      "I help coach the under-15 national squad. That means running drills at training, working with players on technique and footwork, and backing the head coach on what each player needs to work on next. Most of it is explaining the same idea three different ways until it clicks for that particular kid.",
+    tags: [],
   },
 ];
 
@@ -157,7 +165,7 @@ export const beyond: { label: string; body: string }[] = [
   },
   {
     label: "Captaining",
-    body: "Team captain and head coach of a national-level badminton team for three years, running the training programmes for two of them.",
+    body: "Team captain of a national-level badminton team for three years.",
   },
   {
     label: "Competing",
