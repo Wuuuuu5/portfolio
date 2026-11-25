@@ -14,10 +14,11 @@ const WIPE = "transition-[clip-path] duration-1100 ease-[cubic-bezier(0.65,0,0.3
  * chalk floor line with a low net in the middle, kept clear of the letters),
  * and a shuttle waits on the floor at the left.
  *
- * Hover it (mouse), tap it (touch) or Tab to it (keyboard) and the shuttle
- * is hit up over the net to the far baseline, wiping "Joseph Wu" into
- * 吴卓熙 right behind it. Leave and it's returned the other way. Between
- * shots it rests where it landed, so it always shows whose side it's on.
+ * Hover it (mouse), tap it (touch) or Tab to it / press Enter (keyboard) and
+ * the shuttle is hit up over the net to the far baseline, wiping "Joseph Wu"
+ * into 吴卓熙 right behind it. It stays there after you leave; the next
+ * hover hits it back the other way. Between shots it rests where it landed,
+ * so it always shows whose side it's on.
  *
  * Both names sit in the same grid cell and fill its full width, so their
  * clip-path percentages and the shuttle's `left` all measure the same box
@@ -42,14 +43,15 @@ export default function NameSwap() {
       tabIndex={0}
       aria-label={`${site.name}, ${site.nameZh}`}
       onPointerDown={(e) => (lastPointer.current = e.pointerType)}
-      onPointerEnter={(e) => isMouse(e) && show(true)}
-      onPointerLeave={(e) => isMouse(e) && show(false)}
+      // Each new hover is a fresh shot to the other side; leaving doesn't
+      // send it back, so the name stays as the shuttle left it.
+      onPointerEnter={(e) => isMouse(e) && show(!zh)}
       // Touch and pen have no hover, so a tap toggles instead.
       onClick={() => lastPointer.current !== "mouse" && show(!zh)}
       // Keyboard focus only: a tap also focuses the name, and would otherwise
       // swap it here and straight back again in onClick.
-      onFocus={(e) => e.currentTarget.matches(":focus-visible") && show(true)}
-      onBlur={() => show(false)}
+      onFocus={(e) => e.currentTarget.matches(":focus-visible") && show(!zh)}
+      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), show(!zh))}
       className="relative grid cursor-default font-display text-[clamp(3.5rem,13vw,11rem)] leading-none font-semibold tracking-[-0.045em] select-none focus-visible:outline-offset-[0.4em]"
     >
       {/* ---------- the court, behind the letters ---------- */}
