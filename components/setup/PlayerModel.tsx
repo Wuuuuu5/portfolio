@@ -54,7 +54,7 @@ const BODY_TURN = -1.5;
 /** Turns ONLY the torso (radians) on top of BODY_TURN. The head, racket,
     hands and legs stay where they are; the arms re-bend from the moved
     shoulders. -BODY_TURN = torso square to the camera. */
-const TORSO_TURN = 1.5;
+const TORSO_TURN = 1;
 /** Undoes TORSO_TURN, for things placed in the torso that should stay put. */
 const UNTURN = new THREE.Euler(0, -TORSO_TURN, 0);
 
