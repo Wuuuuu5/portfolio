@@ -12,7 +12,7 @@ import { sections, site, skills } from "@/lib/content";
 import SectionHeading from "./SectionHeading";
 import { SERVICE_CARD } from "./cardStyles";
 
-const { Bodies, Composite, Constraint, Engine, Sleeping } = Matter;
+const { Bodies, Body, Composite, Constraint, Engine, Sleeping } = Matter;
 
 /**
  * closed    → the big zipped bag, waiting to be opened
@@ -521,12 +521,15 @@ function PhysicsStack({
     const bodies: (Matter.Body | null)[] = SPECS.map(() => null);
     world.current = { engine, bodies };
 
-    // The floor, and walls at the edges of the section so nothing flies off the page.
+    // A closed box: floor, ceiling and both sides sit just outside the visible area,
+    // so no block can leave it. They're thick so a hard fling can't tunnel through.
     const solid = { isStatic: true, friction: 1 };
+    const T = 400;
     Composite.add(engine.world, [
-      Bodies.rectangle(W / 2, AREA_H + 50, W + 400, 100, solid),
-      Bodies.rectangle(-50, 0, 100, AREA_H * 4, solid),
-      Bodies.rectangle(W + 50, 0, 100, AREA_H * 4, solid),
+      Bodies.rectangle(W / 2, AREA_H + T / 2, W + 2 * T, T, solid),
+      Bodies.rectangle(W / 2, -T / 2, W + 2 * T, T, solid),
+      Bodies.rectangle(-T / 2, AREA_H / 2, T, AREA_H + 2 * T, solid),
+      Bodies.rectangle(W + T / 2, AREA_H / 2, T, AREA_H + 2 * T, solid),
     ]);
 
     const reduce = window.matchMedia(
@@ -569,6 +572,16 @@ function PhysicsStack({
       bodies.forEach((body, i) => {
         const el = els.current[i];
         if (!body || !el) return;
+        // Safety net: if a block ever does slip out of the box, put it back inside.
+        const { x, y } = body.position;
+        if (x < 0 || x > W || y < 0 || y > AREA_H) {
+          Body.setPosition(body, {
+            x: Math.min(Math.max(x, sizes[i] / 2), W - sizes[i] / 2),
+            y: Math.min(Math.max(y, BLOCK_H), AREA_H - BLOCK_H),
+          });
+          Body.setVelocity(body, { x: 0, y: 0 });
+          Body.setAngularVelocity(body, 0);
+        }
         el.style.transform = `translate(${body.position.x - sizes[i] / 2}px, ${
           body.position.y - BLOCK_H / 2
         }px) rotate(${body.angle}rad)`;
@@ -588,8 +601,13 @@ function PhysicsStack({
   }, [building]);
 
   const toWorld = (e: React.PointerEvent) => {
+    // Clamped to the box, so dragging past the edge holds the block against the wall
+    // instead of yanking it through.
     const rect = area.current!.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    return {
+      x: Math.min(Math.max(e.clientX - rect.left, 0), rect.width),
+      y: Math.min(Math.max(e.clientY - rect.top, 0), rect.height),
+    };
   };
 
   const release = () => {
