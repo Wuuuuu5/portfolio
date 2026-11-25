@@ -136,9 +136,9 @@ export const experience: Role[] = [
 ];
 
 export const about: string[] = [
-  "I'm a Computer Science student at the University of Auckland, finishing in 2026.",
-  "Most of what I know came from building something slightly beyond what I could already do and refusing to stop until it ran. The badminton analysis tool is the clearest example — I picked up computer vision because I wanted an answer about my own game that no existing tool would give me.",
-  "The rest comes from working with other people: seven engineers and a real client at WDCC, a three-person team at university. What I want next is the part I can't get on my own — a codebase bigger than my head, and reviewers who'll tell me when I'm doing it the hard way.",
+  "Hi, I'm Joseph — a Computer Science student at the University of Auckland, finishing in 2027.",
+  "I like building things that are slightly beyond what I can already do, then sticking with them until they work. Most of my projects start from something I actually care about, like the badminton analysis tool I built to get answers about my own game.",
+  "In my spare time I'm usually playing badminton, coaching it, or coding something new.",
 ];
 
 export const skills: { group: string; items: string[] }[] = [
@@ -161,7 +161,7 @@ export const skills: { group: string; items: string[] }[] = [
 export const beyond: { label: string; body: string }[] = [
   {
     label: "Studying",
-    body: "BSc in Computer Science at the University of Auckland, expected 2026.",
+    body: "BSc in Computer Science at the University of Auckland, expected 2027.",
   },
   {
     label: "Captaining",
