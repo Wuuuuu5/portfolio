@@ -14,8 +14,8 @@ export const site = {
   email: "josephwu5354@gmail.com",
   // Any link left as "" is hidden automatically.
   github: "https://github.com/Wuuuuu5",
-  linkedin: "https://www.linkedin.com/in/joseph-wu-1741962bb/",
-  resume: "",
+  linkedin: "https://www.linkedin.com/in/josephwu02/",
+  resume: "/cv.pdf",
   writing: "",
 } as const;
 
@@ -166,7 +166,7 @@ export const beyond: { label: string; body: string }[] = [
 ];
 
 export const contact = {
-  kicker: "Match point",
+  kicker: "Let's connect",
   heading: "Looking for a 2026 internship.",
   body: "Backend or full-stack, in Auckland or remote. If you've got a team that reviews code carefully, I'd like to talk.",
 } as const;

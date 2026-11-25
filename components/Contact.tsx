@@ -6,7 +6,7 @@ import Shuttle from "./Shuttle";
 const socials = [
   { href: site.github, label: "GitHub" },
   { href: site.linkedin, label: "LinkedIn" },
-  { href: site.resume, label: "Résumé" },
+  { href: site.resume, label: "CV" },
   { href: site.writing, label: "Writing" },
 ].filter((s) => s.href);
 

@@ -6,7 +6,7 @@ const socials = [
   { href: site.github, label: "GitHub" },
   { href: site.linkedin, label: "LinkedIn" },
   { href: site.email && `mailto:${site.email}`, label: "Email" },
-  { href: site.resume, label: "Résumé" },
+  { href: site.resume, label: "CV" },
 ].filter((s) => s.href);
 
 const linkClass = "transition-colors duration-250 hover:text-accent";
