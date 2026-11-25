@@ -55,6 +55,9 @@ const BODY_TURN = -1.5;
     hands and legs stay where they are; the arms re-bend from the moved
     shoulders. -BODY_TURN = torso square to the camera. */
 const TORSO_TURN = 1;
+/** Turns both legs together (radians), same direction as TORSO_TURN:
+    + toward the camera, - back toward side-on. */
+const LEGS_TURN = 1.2;
 /** Undoes TORSO_TURN, for things placed in the torso that should stay put. */
 const UNTURN = new THREE.Euler(0, -TORSO_TURN, 0);
 
@@ -268,8 +271,10 @@ export default function PlayerModel({
         {/* leg(side, hip, knee, foot): hip -forward/+back · knee bigger = more bent · foot 0 flat, + heel up */}
         {/* Jump smash scissor kick: racket-side leg swung back and bent,
             left leg driven forward with the knee up. */}
-        {leg(2, -0.25, 1.82, 1.4)}
-        {leg(-2, 0.28, 0.4, 0.6)}
+        <group rotation={[0, LEGS_TURN, 0]}>
+          {leg(2, -0.25, 1.82, 1.4)}
+          {leg(-2, 0.28, 0.4, 0.6)}
+        </group>
 
         {/* Shorts turn with the torso (TORSO_TURN); the legs stay put. */}
         <Part id="shorts" {...part}>
