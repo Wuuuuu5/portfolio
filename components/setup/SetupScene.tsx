@@ -1,12 +1,15 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { modelUrl, type EquipmentId } from "@/lib/setup";
 import PlayerModel from "./PlayerModel";
-import GLBPlayer from "./GLBPlayer";
+
+// The GLTF/Draco/Meshopt loaders are only fetched if a custom model is set,
+// so the voxel player's bundle doesn't carry them.
+const GLBPlayer = lazy(() => import("./GLBPlayer"));
 import { Blocker, VoxelDisc } from "./parts";
 import { useThemeColors } from "./useThemeColors";
 

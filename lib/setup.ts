@@ -48,16 +48,41 @@ export const setupSection = {
  */
 export const modelUrl = "";
 
+/**
+ * My racket's colourway (Yonex Astrox 100 ZZ). Both the 3D racket and the
+ * pixel racket on the card are painted from it.
+ */
+export const racketColourway: keyof typeof racketColourways = "dark-navy";
+
+export const racketColourways = {
+  "dark-navy": {
+    frame: "#2f4590", // the navy frame
+    frameShadow: "#18234d",
+    frameHighlight: "#7f9bf0", // gloss along the lit edge
+    shaft: "#3a4f96",
+    trim: "#d9a441", // gold detailing: shaft rings, grip collar
+  },
+  kurenai: {
+    frame: "#c8102e",
+    frameShadow: "#7a0a1d",
+    frameHighlight: "#ff5a6e",
+    shaft: "#2a2b30",
+    trim: "#d9a441",
+  },
+} as const;
+
+export const racketColours = racketColourways[racketColourway];
+
 export const equipment: Equipment[] = [
   {
     id: "racket",
     label: "Racket",
-    brand: "[Racket brand]",
-    model: "[Racket model]",
+    brand: "Yonex",
+    model: "Astrox 100 ZZ",
     specs: [
-      { label: "Weight", value: "[e.g. 4U, 83g]" },
-      { label: "Balance", value: "[e.g. head heavy]" },
-      { label: "Flex", value: "[e.g. stiff]" },
+      { label: "Weight", value: "[3U (88g) or 4U (83g)]" },
+      { label: "Balance", value: "Head heavy" },
+      { label: "Flex", value: "Extra stiff" },
       { label: "String", value: "[string, tension]" },
     ],
     comment: "[Why you play with this racket, and what it suits in your game.]",

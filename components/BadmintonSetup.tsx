@@ -15,12 +15,31 @@ import SectionHeading from "./SectionHeading";
 import PixelIcon from "./setup/PixelIcon";
 import type { LeaderPoint } from "./setup/SetupScene";
 
-// The 3D bundle (three.js, R3F, drei) is only downloaded when the section is
-// about to scroll into view, and never rendered on the server.
-const SetupScene = dynamic(() => import("./setup/SetupScene"), {
+// The 3D bundle (three.js, R3F, drei) is kept out of the first page load and
+// never rendered on the server. It's fetched in the background once the page
+// is idle (see below), so it's usually cached before the section arrives.
+const loadScene = () => import("./setup/SetupScene");
+const SetupScene = dynamic(loadScene, {
   ssr: false,
   loading: () => <StageMessage>Loading the player…</StageMessage>,
 });
+
+/** Run `fn` once the page has loaded and the browser has a quiet moment. */
+function whenIdle(fn: () => void) {
+  let idleId: number | undefined;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const schedule = () => {
+    if ("requestIdleCallback" in window) idleId = window.requestIdleCallback(fn, { timeout: 3000 });
+    else timer = setTimeout(fn, 1500);
+  };
+  if (document.readyState === "complete") schedule();
+  else window.addEventListener("load", schedule, { once: true });
+  return () => {
+    window.removeEventListener("load", schedule);
+    if (idleId !== undefined) window.cancelIdleCallback(idleId);
+    if (timer !== undefined) clearTimeout(timer);
+  };
+}
 
 /** Wide screen with a real mouse: card docks inside the stage with a leader line. */
 const WIDE_QUERY = "(min-width: 900px) and (hover: hover) and (pointer: fine)";
@@ -58,7 +77,11 @@ export default function BadmintonSetup() {
   const wide = useMediaQuery(WIDE_QUERY);
   const reducedMotion = useMediaQuery(REDUCED_QUERY);
 
-  // Start loading 3D a screen before the section arrives, so it's ready.
+  // Download the 3D code in the background as soon as the page is idle.
+  useEffect(() => whenIdle(() => void loadScene()), []);
+
+  // Mount the scene (WebGL setup, shader compile) well before the section
+  // arrives, so the player is already drawn when it scrolls into view.
   useEffect(() => {
     const el = sectionRef.current;
     if (!el || typeof IntersectionObserver === "undefined") {
@@ -71,7 +94,7 @@ export default function BadmintonSetup() {
         setNear(true);
         observer.disconnect();
       },
-      { rootMargin: "600px 0px" },
+      { rootMargin: "1200px 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -195,13 +218,14 @@ export default function BadmintonSetup() {
 export function EquipmentCard({ item }: { item: Equipment }) {
   return (
     <article className="rounded-md border border-line-strong bg-bg/90 p-5 text-left text-fg shadow-[0_18px_40px_-24px_var(--fg)] backdrop-blur-md">
-      <div className="mb-4 flex h-32 items-center justify-center">
+      {/* The racket is long and detailed, so it gets a taller frame. */}
+      <div className={`mb-4 flex items-center justify-center ${item.id === "racket" ? "h-52" : "h-32"}`}>
         {item.image ? (
           // Plain <img>: product shots are small, optional and user-supplied.
           // eslint-disable-next-line @next/next/no-img-element
           <img className="max-h-full max-w-full object-contain" src={item.image} alt={`${item.brand} ${item.model}`} loading="lazy" />
         ) : (
-          <PixelIcon id={item.id} className="h-full w-auto" />
+          <PixelIcon key={item.id} id={item.id} className="h-full w-auto" />
         )}
       </div>
 
