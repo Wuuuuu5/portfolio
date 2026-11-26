@@ -125,17 +125,19 @@ const ICONS: Record<EquipmentId, string[]> = {
     "ssssssssssssss",
     "ssssssssssssss",
   ],
-  // z zip & handle, b blue body, n navy ends / base / pocket, w white band
+  // k black, B blue panel, w white logo / pinstripes, p purple, c camo, z zip
   bag: [
-    ".....zzzzzz.....",
-    ".....z....z.....",
-    ".nbbbbbbbbbbbbn.",
-    "nbbbbbbbbbbbbbbn",
-    "nbwwwwwwwwwwwwbn",
-    "nbnnnnnnnnnnnnbn",
-    "nbnnnnnnnnnnnnbn",
-    "nbbbbbbbbbbbbbbn",
-    ".nnnnnnnnnnnnnn.",
+    ".....kkkkkk.....",
+    ".....k....k.....",
+    "....kkkkkkkk....",
+    ".zzzzzzzzzzzzzz.",
+    "kBBBBBBBBBcpkpck",
+    "kBBBBBBBBBBwcpkk",
+    "kBwBwwwwwwBBwcpk",
+    "kBBBwwwwwwBBBwck",
+    "kBBBBBBBBBBBBBpk",
+    "kBBBBBBBBBBBBBBk",
+    ".kkkkkkkkkkkkkk.",
   ],
 };
 
@@ -165,10 +167,12 @@ const ITEM_FILL: Partial<Record<EquipmentId, Record<string, string>>> = {
     s: kitColours.shoes.sole,
   },
   bag: {
-    z: kitColours.bag.zip,
-    b: kitColours.bag.blue,
-    n: kitColours.bag.navy,
+    k: kitColours.bag.black,
+    B: kitColours.bag.blue,
     w: kitColours.bag.white,
+    p: kitColours.bag.purple,
+    c: kitColours.bag.camo,
+    z: kitColours.bag.zip,
   },
 };
 

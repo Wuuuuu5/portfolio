@@ -100,11 +100,17 @@ export const kitColours = {
     band: "#33363f", // waistband, a shade lighter so it reads as a seam
   },
   /** Yonex Pro Tournament Bag 92231WEX in Fine Blue. */
+  /** Mostly black, with a Fine Blue front panel, white YONEX logo and
+      purple / blue camo shards with white pinstripes in the top corner. */
   bag: {
-    blue: "#3a6fd1",
-    navy: "#1b2a55",
+    black: "#16181d",
+    blue: "#1f5fc8",
+    purple: "#6a3fc2",
+    camo: "#2c4da8",
     white: "#f3f5fa",
-    zip: "#1a1d26",
+    zip: "#3a3d47",
+    puller: "#c9ced8",
+    handle: "#22252d", // padded wrap joining the two handles
   },
 } as const;
 
