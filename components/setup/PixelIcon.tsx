@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { racketColours, type EquipmentId } from "@/lib/setup";
+import { kitColours, racketColours, type EquipmentId } from "@/lib/setup";
 
 /**
  * My racket, the Yonex Astrox 100 ZZ, in pixels: the squared-off isometric
@@ -97,47 +97,38 @@ const ICONS: Record<EquipmentId, string[]> = {
     "....aaaaaa....",
     "....llllll....",
   ],
+  // k black, b waistband
   shorts: [
-    "ffffffffffff",
-    "ffffffffffff",
-    "ffffffffffff",
-    "fffff..fffff",
-    "ffff....ffff",
-    "ffff....ffff",
-    "ffff....ffff",
-    "llll....llll",
+    "bbbbbbbbbbbb",
+    "kkkkkkkkkkkk",
+    "kkkkkkkkkkkk",
+    "kkkkk..kkkkk",
+    "kkkk....kkkk",
+    "kkkk....kkkk",
+    "kkkk....kkkk",
+    "kkkk....kkkk",
   ],
+  // o outline, u white upper, n navy panel, s sole
   shoes: [
-    "......lllll...",
-    "....llllllll..",
-    "..llllllllll..",
-    ".lllllllllllll",
-    "llllllllllllll",
-    "aaaaaaaaaaaaaa",
-    "aaaaaaaaaaaaaa",
+    "......ooooo...",
+    "....oouuuuuo..",
+    "..oouuunnuuo..",
+    ".ouuuunnuuuuuo",
+    "ouuuuuuuuuuuuo",
+    "ssssssssssssss",
+    "ssssssssssssss",
   ],
-  socks: [
-    "llllll....",
-    "aaaaaa....",
-    "llllll....",
-    "llllll....",
-    "llllll....",
-    "llllll....",
-    "lllllll...",
-    "llllllllll",
-    "llllllllll",
-    ".lllllllll",
-  ],
+  // z zip & handle, b blue body, n navy ends / base / pocket, w white band
   bag: [
-    ".....ffffff.....",
-    ".....f....f.....",
-    ".aaaaaaaaaaaaaa.",
-    "aaaaaaaaaaaaaaaa",
-    "aallllllllllllaa",
-    "aaaaaaaaaaaaaaaa",
-    "aaaaaaaaaaaaaaaa",
-    "aaaaaaaaaaaaaaaa",
-    ".aaaaaaaaaaaaaa.",
+    ".....zzzzzz.....",
+    ".....z....z.....",
+    ".nbbbbbbbbbbbbn.",
+    "nbbbbbbbbbbbbbbn",
+    "nbwwwwwwwwwwwwbn",
+    "nbnnnnnnnnnnnnbn",
+    "nbnnnnnnnnnnnnbn",
+    "nbbbbbbbbbbbbbbn",
+    ".nnnnnnnnnnnnnn.",
   ],
 };
 
@@ -148,13 +139,31 @@ const FILL: Record<string, string> = {
   l: "var(--line-strong)",
 };
 
+/** Items with their own real colours (lib/setup.ts), same as the 3D model. */
+const ITEM_FILL: Partial<Record<EquipmentId, Record<string, string>>> = {
+  racket: RACKET_FILL,
+  shorts: { k: kitColours.shorts.main, b: kitColours.shorts.band },
+  shoes: {
+    o: kitColours.shoes.edge,
+    u: kitColours.shoes.upper,
+    n: kitColours.shoes.accent,
+    s: kitColours.shoes.sole,
+  },
+  bag: {
+    z: kitColours.bag.zip,
+    b: kitColours.bag.blue,
+    n: kitColours.bag.navy,
+    w: kitColours.bag.white,
+  },
+};
+
 /**
  * Draws itself in top to bottom, a row at a time, each time it's mounted.
  * Give it `key={id}` so switching items replays the reveal.
  */
 export default function PixelIcon({ id, className }: { id: EquipmentId; className?: string }) {
   const rows = ICONS[id];
-  const fill = id === "racket" ? RACKET_FILL : FILL;
+  const fill = ITEM_FILL[id] ?? FILL;
   const width = Math.max(...rows.map((r) => r.length));
   return (
     <svg

@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef, type ReactNode } from "react";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
-import { equipment, racketColours, type EquipmentId } from "@/lib/setup";
+import { equipment, kitColours, racketColours, type EquipmentId } from "@/lib/setup";
 import {
   Blocker,
   CELL,
@@ -69,6 +69,17 @@ const UNTURN = new THREE.Euler(0, -TORSO_TURN, 0);
 // Jump smash: racket elbow back and down, reaching arm straight.
 const RIGHT_POLE = new THREE.Vector3(0, -1, -0.3).normalize();
 const LEFT_POLE = new THREE.Vector3(0, -1, 0).normalize();
+
+/** Real item colours (lib/setup.ts), shown when an item lights up. */
+const BAG = kitColours.bag;
+const SHOES = kitColours.shoes;
+const SHORTS = kitColours.shorts;
+
+/** Trim on the jersey (its own colours aren't set yet). */
+const KIT = {
+  navy: "#1b2a55",
+  white: "#f3f5fa",
+};
 
 /** Arm lengths (voxels): shoulder→elbow, elbow→hand. */
 const UPPER = 7;
@@ -223,7 +234,7 @@ export default function PlayerModel({
   const white = "#f3f5fa";
 
   /**
-   * Thigh → knee → shin, sock, then the ankle and shoe. `foot` is the sole's
+   * Thigh → knee → shin, then the ankle and shoe. `foot` is the sole's
    * angle to the floor (radians): 0 is flat, positive lifts the heel onto the
    * toes. The ankle undoes the hip and knee angles first, so it's measured
    * against the floor, not the shin.
@@ -232,22 +243,25 @@ export default function PlayerModel({
     <Joint key={x} at={[v(x), 0, 0]} rotation={[hip, 0, 0]}>
       {skin(<VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-2), 0]} />)}
       <Joint at={[0, v(-4), 0]} rotation={[knee, 0, 0]}>
-        {skin(
-          <VoxelBox size={[v(3), v(3), v(3)]} position={[0, v(-1.5), 0]} />,
-        )}
-        <Part id="socks" {...part}>
-          <VoxelBox
-            size={[v(3), v(3), v(3)]}
-            position={[0, v(-4.5), 0]}
-            tone={white}
-          />
-        </Part>
+        {skin(<VoxelBox size={[v(3), v(6), v(3)]} position={[0, v(-3), 0]} />)}
         <Joint at={[0, v(-6), 0]} rotation={[foot - (hip + knee), 0, 0]}>
+          {/* Shoe (white Eclipsion X): grey sole, white upper that stops
+              short of the toe, navy heel tab. */}
           <Part id="shoes" {...part}>
             <VoxelBox
-              size={[v(3), v(2), v(5)]}
-              position={[0, v(-1), v(1)]}
-              tone={colors.accent}
+              size={[v(3), v(1), v(5)]}
+              position={[0, v(-1.5), v(1)]}
+              tone={SHOES.sole}
+            />
+            <VoxelBox
+              size={[v(3), v(1), v(4)]}
+              position={[0, v(-0.5), v(0.5)]}
+              tone={SHOES.upper}
+            />
+            <VoxelBox
+              size={[v(3), v(1), v(1)]}
+              position={[0, v(0.5), v(-1)]}
+              tone={SHOES.accent}
             />
           </Part>
         </Joint>
@@ -278,11 +292,17 @@ export default function PlayerModel({
 
         {/* Shorts turn with the torso (TORSO_TURN); the legs stay put. */}
         <Part id="shorts" {...part}>
+          {/* Shorts: plain black, waistband a shade lighter. */}
           <group rotation={[0, TORSO_TURN, 0]}>
             <VoxelBox
-              size={[v(8), v(5), v(4)]}
-              position={[0, v(2.5), 0]}
-              tone={colors.fg}
+              size={[v(8), v(4), v(4)]}
+              position={[0, v(2), 0]}
+              tone={SHORTS.main}
+            />
+            <VoxelBox
+              size={[v(8), v(1), v(4)]}
+              position={[0, v(4.5), 0]}
+              tone={SHORTS.band}
             />
           </group>
         </Part>
@@ -291,8 +311,20 @@ export default function PlayerModel({
         {/* torso [lean +forward/-back, twist +/-, tilt sideways] */}
         {/* Jump smash: spine straight up. */}
         <Joint at={[0, v(5), 0]} rotation={[0, TORSO_TURN, 0]}>
+          {/* Jersey: navy hem, a white chest band, the rest in the accent. */}
           <Part id="jersey" {...part}>
-            <VoxelBox size={[v(8), v(9), v(4)]} position={[0, v(4.5), 0]} />
+            <VoxelBox
+              size={[v(8), v(1), v(4)]}
+              position={[0, v(0.5), 0]}
+              tone={KIT.navy}
+            />
+            <VoxelBox size={[v(8), v(5), v(4)]} position={[0, v(3.5), 0]} />
+            <VoxelBox
+              size={[v(8), v(1), v(4)]}
+              position={[0, v(6.5), 0]}
+              tone={KIT.white}
+            />
+            <VoxelBox size={[v(8), v(2), v(4)]} position={[0, v(8), 0]} />
           </Part>
 
           {/* Head, eyes level on the shuttle. */}
@@ -313,8 +345,14 @@ export default function PlayerModel({
           {/* Both arms: NO numbers to set here, they bend themselves to the
               racket (move it with RACKET_HAND / RACKET_ANGLE at the top). */}
           <group ref={leftShoulder} position={[v(-5.5), v(9), 0]}>
+            {/* sleeve with a white cuff */}
             <Part id="jersey" {...part}>
-              <VoxelBox size={[v(3), v(3), v(3)]} position={[0, v(-1.5), 0]} />
+              <VoxelBox size={[v(3), v(2), v(3)]} position={[0, v(-1), 0]} />
+              <VoxelBox
+                size={[v(3), v(1), v(3)]}
+                position={[0, v(-2.5), 0]}
+                tone={KIT.white}
+              />
             </Part>
             {skin(
               <VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-5), 0]} />,
@@ -336,8 +374,14 @@ export default function PlayerModel({
           </group>
 
           <group ref={rightShoulder} position={[v(5.5), v(9), 0]}>
+            {/* sleeve with a white cuff */}
             <Part id="jersey" {...part}>
-              <VoxelBox size={[v(3), v(3), v(3)]} position={[0, v(-1.5), 0]} />
+              <VoxelBox size={[v(3), v(2), v(3)]} position={[0, v(-1), 0]} />
+              <VoxelBox
+                size={[v(3), v(1), v(3)]}
+                position={[0, v(-2.5), 0]}
+                tone={KIT.white}
+              />
             </Part>
             {skin(
               <VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-5), 0]} />,
@@ -404,17 +448,67 @@ export default function PlayerModel({
         </Joint>
       </group>
 
-      {/* ---------- racket bag, left on the floor ---------- */}
+      {/* ---------- racket bag, left on the floor ----------
+          Yonex Pro Tournament Bag 92231WEX in Fine Blue: a long blue body
+          on a navy base, navy end pockets, a navy front pocket with a white
+          band, a zip along the top and a carry handle. All in whole voxels,
+          centred on x 10 / z 1. */}
       <Part id="bag" {...part}>
+        {/* base */}
         <VoxelBox
-          size={[v(10), v(4), v(4)]}
-          position={[v(10), v(2), v(1)]}
-          tone={colors.accent2}
+          size={[v(12), v(1), v(5)]}
+          position={[v(10), v(0.5), v(1)]}
+          tone={BAG.navy}
+        />
+        {/* main body */}
+        <VoxelBox
+          size={[v(12), v(4), v(5)]}
+          position={[v(10), v(3), v(1)]}
+          tone={BAG.blue}
+        />
+        {/* end pockets */}
+        <VoxelBox
+          size={[v(1), v(5), v(5)]}
+          position={[v(3.5), v(2.5), v(1)]}
+          tone={BAG.navy}
         />
         <VoxelBox
-          size={[v(4), v(1), v(1)]}
-          position={[v(10), v(4.5), v(1)]}
-          tone={colors.fg}
+          size={[v(1), v(5), v(5)]}
+          position={[v(16.5), v(2.5), v(1)]}
+          tone={BAG.navy}
+        />
+        {/* front pocket and its white band, on the camera side */}
+        <VoxelBox
+          size={[v(8), v(2), v(1)]}
+          position={[v(10), v(2), v(4)]}
+          tone={BAG.navy}
+        />
+        <VoxelBox
+          size={[v(8), v(1), v(1)]}
+          position={[v(10), v(3.5), v(4)]}
+          tone={BAG.white}
+        />
+        {/* zip along the top */}
+        <VoxelBox
+          size={[v(10), v(1), v(1)]}
+          position={[v(10), v(5.5), v(1)]}
+          tone={BAG.zip}
+        />
+        {/* carry handle: two posts and the grip */}
+        <VoxelBox
+          size={[v(1), v(1), v(1)]}
+          position={[v(8), v(6.5), v(1)]}
+          tone={BAG.zip}
+        />
+        <VoxelBox
+          size={[v(1), v(1), v(1)]}
+          position={[v(12), v(6.5), v(1)]}
+          tone={BAG.zip}
+        />
+        <VoxelBox
+          size={[v(5), v(1), v(1)]}
+          position={[v(10), v(7.5), v(1)]}
+          tone={BAG.zip}
         />
       </Part>
     </group>
