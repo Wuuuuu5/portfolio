@@ -350,7 +350,7 @@ a {
 
 /* Every section gets the same vertical rhythm. */
 section {
-  padding-block: clamp(4.5rem, 11vh, 8rem);
+  padding-block: clamp(3.5rem, 8vh, 6rem);
   position: relative;
 }
 }
