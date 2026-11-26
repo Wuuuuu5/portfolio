@@ -31,8 +31,8 @@ export type Equipment = {
 };
 
 export const setupSection = {
-  num: "05",
-  kicker: "Kit bag",
+  num: "06",
+  kicker: "The gear",
   title: "My Badminton Setup",
   note: "Drag to turn the player around. Point at, or tap, any piece of kit to see what it is and what I think of it.",
 } as const;
