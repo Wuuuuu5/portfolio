@@ -11,7 +11,7 @@ export const site = {
   /** One line under the name in the hero. */
   tagline: "Computer Science Student @ University of Auckland",
   /** Small line above the hero buttons. Leave "" to hide it. */
-  availability: "Open to 2026 internships · Auckland or remote",
+  availability: "Based in Auckland, New Zealand",
   handle: "joseph.wu",
   email: "josephwu5354@gmail.com",
   // Any link left as "" is hidden automatically.
@@ -183,6 +183,6 @@ export const beyond: { label: string; body: string }[] = [
 
 export const contact = {
   kicker: "Let's connect",
-  heading: "Looking for a 2026 internship.",
-  body: "Backend or full-stack, in Auckland or remote. If you've got a team that reviews code carefully, I'd like to talk.",
+  heading: "Say hello.",
+  body: "Whether it's a project, a question about something I've built, or a game of badminton, my inbox is always open.",
 } as const;

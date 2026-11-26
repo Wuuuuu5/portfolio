@@ -254,15 +254,19 @@ export function EquipmentCard({ item }: { item: Equipment }) {
         {item.brand} {item.model}
       </h3>
 
-      <dl className="mt-3 grid gap-1 border-t border-line pt-3">
-        {item.specs.map((spec) => (
-          <div key={spec.label} className="grid grid-cols-[6.5rem_1fr] gap-3 text-[0.8rem]">
-            <dt className="text-fg-faint">{spec.label}</dt>
-            <dd className="text-fg">{spec.value}</dd>
-          </div>
-        ))}
-      </dl>
-      <p className="mt-3 text-[0.82rem] leading-relaxed text-fg-dim">{item.comment}</p>
+      {item.specs.length > 0 ? (
+        <dl className="mt-3 grid gap-1 border-t border-line pt-3">
+          {item.specs.map((spec) => (
+            <div key={spec.label} className="grid grid-cols-[6.5rem_1fr] gap-3 text-[0.8rem]">
+              <dt className="text-fg-faint">{spec.label}</dt>
+              <dd className="text-fg">{spec.value}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+      {item.comment ? (
+        <p className="mt-3 text-[0.82rem] leading-relaxed text-fg-dim">{item.comment}</p>
+      ) : null}
     </article>
   );
 }

@@ -5,12 +5,7 @@
  * Anything in [square brackets] is a placeholder for you to replace.
  */
 
-export type EquipmentId =
-  | "racket"
-  | "jersey"
-  | "shorts"
-  | "shoes"
-  | "bag";
+export type EquipmentId = "racket" | "jersey" | "shorts" | "shoes" | "bag";
 
 export type Equipment = {
   id: EquipmentId;
@@ -72,11 +67,26 @@ export const racketColourways = {
 
 export const racketColours = racketColourways[racketColourway];
 
+/** My grip wrap: white, tinted grey so it still shows on a light page. */
+export const gripColours = {
+  wrap: "#dfe5ef",
+  seam: "#b9c3d6", // the overlap line of the wrap
+} as const;
+
 /**
  * The real colours of the rest of my kit. The 3D player (when an item
  * lights up) and the pixel icon on its card are both painted from these.
  */
 export const kitColours = {
+  /** P.R IND Kaleidoscope training shirt, blue colourway: white fading to
+      light blue, dark purple brush strokes, orange flecks, black logo. */
+  jersey: {
+    white: "#f3f5fa",
+    blue: "#9dbcf2",
+    purple: "#3a2a7c",
+    orange: "#f27a3c",
+    logo: "#16181d",
+  },
   /** Yonex Power Cushion Eclipsion X, the white pair. */
   shoes: {
     upper: "#dfe5ef", // white, tinted grey so it still shows on a light page
@@ -90,11 +100,17 @@ export const kitColours = {
     band: "#33363f", // waistband, a shade lighter so it reads as a seam
   },
   /** Yonex Pro Tournament Bag 92231WEX in Fine Blue. */
+  /** Mostly black, with a Fine Blue front panel, white YONEX logo and
+      purple / blue camo shards with white pinstripes in the top corner. */
   bag: {
-    blue: "#3a6fd1",
-    navy: "#1b2a55",
+    black: "#16181d",
+    blue: "#1f5fc8",
+    purple: "#6a3fc2",
+    camo: "#2c4da8",
     white: "#f3f5fa",
-    zip: "#1a1d26",
+    zip: "#3a3d47",
+    puller: "#c9ced8",
+    handle: "#22252d", // padded wrap joining the two handles
   },
 } as const;
 
@@ -105,37 +121,29 @@ export const equipment: Equipment[] = [
     brand: "Yonex",
     model: "Astrox 100 ZZ",
     specs: [
-      { label: "Weight", value: "[3U (88g) or 4U (83g)]" },
       { label: "Balance", value: "Head heavy" },
       { label: "Flex", value: "Extra stiff" },
       { label: "String", value: "Yonex BG80 Power" },
-      { label: "Tension", value: "[e.g. 26 lbs]" },
     ],
-    comment: "[Why you play with this racket, and what it suits in your game.]",
+    comment: "",
     image: "",
   },
   {
     id: "jersey",
     label: "Jersey",
-    brand: "[Jersey brand]",
-    model: "[Jersey model]",
-    specs: [
-      { label: "Fit", value: "[e.g. regular]" },
-      { label: "Fabric", value: "[e.g. quick-dry polyester]" },
-    ],
-    comment: "[What you like about it.]",
+    brand: "",
+    model: "P.R IND KALEIDOSCOPE",
+    specs: [],
+    comment: "",
     image: "",
   },
   {
     id: "shorts",
     label: "Shorts",
-    brand: "[Shorts brand]",
-    model: "[Shorts model]",
-    specs: [
-      { label: "Fit", value: "[e.g. regular]" },
-      { label: "Length", value: "[e.g. 7 inch]" },
-    ],
-    comment: "[What you like about them.]",
+    brand: "Yonex",
+    model: "Shorts",
+    specs: [],
+    comment: "",
     image: "",
   },
   {
@@ -143,12 +151,8 @@ export const equipment: Equipment[] = [
     label: "Shoes",
     brand: "Yonex",
     model: "Power Cushion Eclipsion X",
-    specs: [
-      { label: "Size", value: "[your size]" },
-      { label: "Cushioning", value: "Power Cushion" },
-      { label: "Grip", value: "[e.g. gum rubber sole]" },
-    ],
-    comment: "[How they feel on court.]",
+    specs: [],
+    comment: "",
     image: "",
   },
   {
@@ -156,12 +160,8 @@ export const equipment: Equipment[] = [
     label: "Bag",
     brand: "Yonex",
     model: "Pro Tournament Bag 92231WEX",
-    specs: [
-      { label: "Colour", value: "Fine Blue" },
-      { label: "Holds", value: "[e.g. 6 rackets]" },
-      { label: "Compartments", value: "[e.g. thermal, shoe pocket]" },
-    ],
-    comment: "[What you carry in it.]",
+    specs: [{ label: "Colour", value: "Fine Blue" }],
+    comment: "",
     image: "",
   },
 ];
