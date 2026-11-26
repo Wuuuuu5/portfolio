@@ -31,11 +31,7 @@ export default function Hero() {
         <Reveal delay={LOADER_MS + 350} className="mt-10 flex flex-col items-center gap-5">
           {site.availability ? (
             <p className="inline-flex items-center gap-2 text-[0.85rem] text-fg-dim">
-              {/* A soft pulse: "available now". Still for reduced motion. */}
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
-                <span className="relative inline-flex size-2 rounded-full bg-accent" />
-              </span>
+              <span className="inline-flex size-2 rounded-full bg-accent" aria-hidden="true" />
               {site.availability}
             </p>
           ) : null}
