@@ -5,12 +5,7 @@
  * Anything in [square brackets] is a placeholder for you to replace.
  */
 
-export type EquipmentId =
-  | "racket"
-  | "jersey"
-  | "shorts"
-  | "shoes"
-  | "bag";
+export type EquipmentId = "racket" | "jersey" | "shorts" | "shoes" | "bag";
 
 export type Equipment = {
   id: EquipmentId;
@@ -77,6 +72,15 @@ export const racketColours = racketColourways[racketColourway];
  * lights up) and the pixel icon on its card are both painted from these.
  */
 export const kitColours = {
+  /** P.R IND Kaleidoscope training shirt, blue colourway: white fading to
+      light blue, dark purple brush strokes, orange flecks, black logo. */
+  jersey: {
+    white: "#f3f5fa",
+    blue: "#9dbcf2",
+    purple: "#3a2a7c",
+    orange: "#f27a3c",
+    logo: "#16181d",
+  },
   /** Yonex Power Cushion Eclipsion X, the white pair. */
   shoes: {
     upper: "#dfe5ef", // white, tinted grey so it still shows on a light page

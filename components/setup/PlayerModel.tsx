@@ -3,7 +3,12 @@
 import { useLayoutEffect, useRef, type ReactNode } from "react";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
-import { equipment, kitColours, racketColours, type EquipmentId } from "@/lib/setup";
+import {
+  equipment,
+  kitColours,
+  racketColours,
+  type EquipmentId,
+} from "@/lib/setup";
 import {
   Blocker,
   CELL,
@@ -75,11 +80,72 @@ const BAG = kitColours.bag;
 const SHOES = kitColours.shoes;
 const SHORTS = kitColours.shorts;
 
-/** Trim on the jersey (its own colours aren't set yet). */
-const KIT = {
-  navy: "#1b2a55",
-  white: "#f3f5fa",
+const JERSEY = kitColours.jersey;
+
+/**
+ * The Kaleidoscope shirt's front, one letter per voxel, top row first
+ * (8 wide, 9 tall). w white, b light blue, p purple, o orange, k logo.
+ * Runs of the same letter in a row become one box through the whole torso.
+ */
+const JERSEY_PATTERN = [
+  "bwwwwppp",
+  "wwwwpppo",
+  "wkkwwppw",
+  "wwwwpopb",
+  "bwwwwbpw",
+  "pbwwwwbw",
+  "bpbwwbob",
+  "bbbpbbbb",
+  "bbbbbbbb",
+];
+const JERSEY_TONES: Record<string, string> = {
+  w: JERSEY.white,
+  b: JERSEY.blue,
+  p: JERSEY.purple,
+  o: JERSEY.orange,
+  k: JERSEY.logo,
 };
+
+/** The torso's boxes, from JERSEY_PATTERN. */
+function jerseyBoxes() {
+  const boxes: ReactNode[] = [];
+  JERSEY_PATTERN.forEach((row, r) => {
+    const y = JERSEY_PATTERN.length - 1 - r;
+    for (let i = 0; i < row.length;) {
+      let j = i;
+      while (j + 1 < row.length && row[j + 1] === row[i]) j++;
+      const len = j - i + 1;
+      boxes.push(
+        <VoxelBox
+          key={`${y}-${i}`}
+          size={[v(len), v(1), v(4)]}
+          position={[v(-4 + i + len / 2), v(y + 0.5), 0]}
+          tone={JERSEY_TONES[row[i]]}
+        />,
+      );
+      i = j + 1;
+    }
+  });
+  return boxes;
+}
+
+/** A sleeve: top voxel, then light blue, then a light blue cuff. */
+function sleeve(top: string) {
+  return (
+    <>
+      <VoxelBox
+        size={[v(3), v(1), v(3)]}
+        position={[0, v(-0.5), 0]}
+        tone={top}
+      />
+      <VoxelBox
+        size={[v(3), v(2), v(3)]}
+        position={[0, v(-2), 0]}
+        tone={JERSEY.blue}
+      />
+    </>
+  );
+}
 
 /** Arm lengths (voxels): shoulder→elbow, elbow→hand. */
 const UPPER = 7;
@@ -311,20 +377,9 @@ export default function PlayerModel({
         {/* torso [lean +forward/-back, twist +/-, tilt sideways] */}
         {/* Jump smash: spine straight up. */}
         <Joint at={[0, v(5), 0]} rotation={[0, TORSO_TURN, 0]}>
-          {/* Jersey: navy hem, a white chest band, the rest in the accent. */}
+          {/* Jersey: P.R IND Kaleidoscope, painted from JERSEY_PATTERN. */}
           <Part id="jersey" {...part}>
-            <VoxelBox
-              size={[v(8), v(1), v(4)]}
-              position={[0, v(0.5), 0]}
-              tone={KIT.navy}
-            />
-            <VoxelBox size={[v(8), v(5), v(4)]} position={[0, v(3.5), 0]} />
-            <VoxelBox
-              size={[v(8), v(1), v(4)]}
-              position={[0, v(6.5), 0]}
-              tone={KIT.white}
-            />
-            <VoxelBox size={[v(8), v(2), v(4)]} position={[0, v(8), 0]} />
+            {jerseyBoxes()}
           </Part>
 
           {/* Head, eyes level on the shuttle. */}
@@ -345,14 +400,9 @@ export default function PlayerModel({
           {/* Both arms: NO numbers to set here, they bend themselves to the
               racket (move it with RACKET_HAND / RACKET_ANGLE at the top). */}
           <group ref={leftShoulder} position={[v(-5.5), v(9), 0]}>
-            {/* sleeve with a white cuff */}
+            {/* sleeve: white shoulder, light blue below */}
             <Part id="jersey" {...part}>
-              <VoxelBox size={[v(3), v(2), v(3)]} position={[0, v(-1), 0]} />
-              <VoxelBox
-                size={[v(3), v(1), v(3)]}
-                position={[0, v(-2.5), 0]}
-                tone={KIT.white}
-              />
+              {sleeve(JERSEY.white)}
             </Part>
             {skin(
               <VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-5), 0]} />,
@@ -374,14 +424,9 @@ export default function PlayerModel({
           </group>
 
           <group ref={rightShoulder} position={[v(5.5), v(9), 0]}>
-            {/* sleeve with a white cuff */}
+            {/* sleeve: purple brush stroke on the shoulder, light blue below */}
             <Part id="jersey" {...part}>
-              <VoxelBox size={[v(3), v(2), v(3)]} position={[0, v(-1), 0]} />
-              <VoxelBox
-                size={[v(3), v(1), v(3)]}
-                position={[0, v(-2.5), 0]}
-                tone={KIT.white}
-              />
+              {sleeve(JERSEY.purple)}
             </Part>
             {skin(
               <VoxelBox size={[v(3), v(4), v(3)]} position={[0, v(-5), 0]} />,

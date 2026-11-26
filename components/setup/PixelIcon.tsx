@@ -84,18 +84,19 @@ const RACKET_FILL: Record<string, string> = {
  */
 const ICONS: Record<EquipmentId, string[]> = {
   racket: RACKET,
+  // w white, b light blue, p purple, o orange, k logo, c collar
   jersey: [
-    "...aaa..aaa...",
-    ".aaaaallaaaaa.",
-    "aaaaaaaaaaaaaa",
-    "aaaaaaaaaaaaaa",
-    ".aa.aaaaaa.aa.",
-    "....aaaaaa....",
-    "....aaaaaa....",
-    "....aaaaaa....",
-    "....aaaaaa....",
-    "....aaaaaa....",
-    "....llllll....",
+    "...wwc..cpp...",
+    ".bwwwwccpppop.",
+    "bbwwwwwwppppob",
+    "bbwkkwwwwpopbb",
+    ".bb.wwwwbpw.b.",
+    "....pwwwwb....",
+    "....bpwwob....",
+    "....bbbpbb....",
+    "....bbbbbb....",
+    "....bbbbbb....",
+    "....bbbbbb....",
   ],
   // k black, b waistband
   shorts: [
@@ -142,6 +143,14 @@ const FILL: Record<string, string> = {
 /** Items with their own real colours (lib/setup.ts), same as the 3D model. */
 const ITEM_FILL: Partial<Record<EquipmentId, Record<string, string>>> = {
   racket: RACKET_FILL,
+  jersey: {
+    w: kitColours.jersey.white,
+    b: kitColours.jersey.blue,
+    c: kitColours.jersey.blue,
+    p: kitColours.jersey.purple,
+    o: kitColours.jersey.orange,
+    k: kitColours.jersey.logo,
+  },
   shorts: { k: kitColours.shorts.main, b: kitColours.shorts.band },
   shoes: {
     o: kitColours.shoes.edge,
@@ -161,7 +170,13 @@ const ITEM_FILL: Partial<Record<EquipmentId, Record<string, string>>> = {
  * Draws itself in top to bottom, a row at a time, each time it's mounted.
  * Give it `key={id}` so switching items replays the reveal.
  */
-export default function PixelIcon({ id, className }: { id: EquipmentId; className?: string }) {
+export default function PixelIcon({
+  id,
+  className,
+}: {
+  id: EquipmentId;
+  className?: string;
+}) {
   const rows = ICONS[id];
   const fill = ITEM_FILL[id] ?? FILL;
   const width = Math.max(...rows.map((r) => r.length));
@@ -173,11 +188,22 @@ export default function PixelIcon({ id, className }: { id: EquipmentId; classNam
       aria-hidden="true"
     >
       {rows.map((row, y) => (
-        <g key={y} className="motion-safe:animate-pixel-row" style={{ "--row": y } as CSSProperties}>
+        <g
+          key={y}
+          className="motion-safe:animate-pixel-row"
+          style={{ "--row": y } as CSSProperties}
+        >
           {[...row].map((ch, x) =>
             fill[ch] ? (
               // 0.86 leaves a hairline gap so the pixels read as separate dots.
-              <rect key={x} x={x + 0.07} y={y + 0.07} width={0.86} height={0.86} fill={fill[ch]} />
+              <rect
+                key={x}
+                x={x + 0.07}
+                y={y + 0.07}
+                width={0.86}
+                height={0.86}
+                fill={fill[ch]}
+              />
             ) : null,
           )}
         </g>
