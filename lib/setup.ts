@@ -129,13 +129,10 @@ export const equipment: Equipment[] = [
   {
     id: "shorts",
     label: "Shorts",
-    brand: "[Shorts brand]",
-    model: "[Shorts model]",
-    specs: [
-      { label: "Fit", value: "[e.g. regular]" },
-      { label: "Length", value: "[e.g. 7 inch]" },
-    ],
-    comment: "[What you like about them.]",
+    brand: "Yonex",
+    model: "Shorts",
+    specs: [],
+    comment: "",
     image: "",
   },
   {
