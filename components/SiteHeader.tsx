@@ -4,10 +4,15 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { site } from "@/lib/content";
 import Shuttle from "./Shuttle";
 
+// Every section, in page order, so the mobile menu's 01–07 match the
+// section numbers on the page.
 const links = [
   { href: "#about", label: "About" },
   { href: "#experience", label: "Experience" },
   { href: "#work", label: "Projects" },
+  { href: "#skills", label: "Stack" },
+  { href: "#beyond", label: "Beyond" },
+  { href: "#setup", label: "Setup" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -74,7 +79,7 @@ export default function SiteHeader() {
           </span>
         </a>
 
-        <div className="ml-auto flex gap-7 text-[0.875rem] text-fg-dim max-[760px]:hidden">
+        <div className="ml-auto flex gap-6 text-[0.875rem] text-fg-dim max-[960px]:hidden">
           {links.map((link) => (
             <a
               key={link.href}
@@ -101,7 +106,7 @@ export default function SiteHeader() {
         {/* Mobile only, where the links above are hidden. */}
         <button
           type="button"
-          className="group/menu ml-[0.6rem] hidden size-9 cursor-pointer place-content-center justify-items-center gap-[5px] rounded-[10px] border border-line-strong transition-colors duration-250 hover:border-accent max-[760px]:grid"
+          className="group/menu ml-[0.6rem] hidden size-9 cursor-pointer place-content-center justify-items-center gap-[5px] rounded-[10px] border border-line-strong transition-colors duration-250 hover:border-accent max-[960px]:grid"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="mobile-nav"
@@ -118,7 +123,7 @@ export default function SiteHeader() {
           animate in instead. */}
       <div
         id="mobile-nav"
-        className={`hidden flex-col border-t border-line bg-bg/94 px-[var(--gutter)] pt-1 pb-7 backdrop-blur-[14px] ${open ? "max-[760px]:flex" : ""}`}
+        className={`hidden flex-col border-t border-line bg-bg/94 px-[var(--gutter)] pt-1 pb-7 backdrop-blur-[14px] ${open ? "max-[960px]:flex" : ""}`}
         hidden={!open}
       >
         {links.map((link, i) => (
