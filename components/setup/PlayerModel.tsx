@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import {
   equipment,
+  gripColours,
   kitColours,
   racketColours,
   type EquipmentId,
@@ -460,7 +461,8 @@ export default function PlayerModel({
               >
                 <mesh position={[0, v(1.5), 0]}>
                   <boxGeometry args={[v(0.8), v(4), v(0.8)]} />
-                  <FlatMaterial tone={colors.fg} />
+                  {/* white grip wrap */}
+                  <FlatMaterial tone={gripColours.wrap} />
                 </mesh>
                 {/* Shaft and frame in my 100 ZZ's colourway (lib/setup.ts). */}
                 <mesh position={[0, v(6), 0]}>

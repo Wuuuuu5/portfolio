@@ -1,5 +1,10 @@
 import type { CSSProperties } from "react";
-import { kitColours, racketColours, type EquipmentId } from "@/lib/setup";
+import {
+  gripColours,
+  kitColours,
+  racketColours,
+  type EquipmentId,
+} from "@/lib/setup";
 
 /**
  * My racket, the Yonex Astrox 100 ZZ, in pixels: the squared-off isometric
@@ -70,10 +75,11 @@ const RACKET_FILL: Record<string, string> = {
   x: racketColours.trim,
   c: racketColours.trim,
   S: racketColours.shaft,
-  // Strings and grip stay quieter than the frame so the colourway leads.
+  // Strings stay quieter than the frame so the colourway leads.
   s: "var(--fg-faint)",
-  G: "var(--fg-dim)",
-  g: "var(--fg-faint)",
+  // White grip wrap, with its overlap seam.
+  G: gripColours.wrap,
+  g: gripColours.seam,
   B: "var(--fg-faint)",
 };
 
