@@ -32,6 +32,34 @@ export default function SiteHeader() {
 
   const [open, setOpen] = useState(false);
 
+  // Which section is on screen, so its link can show where you are: the last
+  // one whose top has passed 40% of the way down the screen (none over the hero).
+  const [current, setCurrent] = useState<string | null>(null);
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.4;
+      let found: string | null = null;
+      for (const l of links) {
+        const el = document.querySelector(l.href);
+        if (el && el.getBoundingClientRect().top <= line) found = l.href;
+      }
+      setCurrent(found);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   // The menu covers the page, so the page behind it shouldn't scroll — and
   // Escape should always get you out of it.
   useEffect(() => {
@@ -84,7 +112,8 @@ export default function SiteHeader() {
             <a
               key={link.href}
               href={link.href}
-              className="relative transition-colors duration-250 after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-[width] after:duration-300 after:ease-soft after:content-[''] hover:text-fg hover:after:w-full"
+              aria-current={current === link.href ? "location" : undefined}
+              className="relative transition-colors duration-250 after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-[width] after:duration-300 after:ease-soft after:content-[''] hover:text-fg hover:after:w-full aria-[current]:text-fg aria-[current]:after:w-full"
             >
               {link.label}
             </a>
