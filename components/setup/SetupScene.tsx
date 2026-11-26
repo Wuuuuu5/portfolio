@@ -31,6 +31,10 @@ type Props = {
     with their racket (right) side toward the camera. */
 const START_TURN = 0.45;
 
+/** Camera circling the player: negative = anticlockwise seen from above,
+    positive = clockwise. 2 = one lap every 30s. Off for reduced motion. */
+const ORBIT_SPEED = -0.4;
+
 /**
  * Projects the active item's anchor to screen pixels each time a frame is
  * drawn, so the leader line follows the item as the player is dragged round.
@@ -105,6 +109,8 @@ export default function SetupScene({ active, onHover, onSelect, onLeader, reduce
         enableDamping={!reducedMotion}
         dampingFactor={0.08}
         rotateSpeed={0.7}
+        autoRotate={!reducedMotion}
+        autoRotateSpeed={ORBIT_SPEED}
         minPolarAngle={Math.PI / 2 - 0.35}
         maxPolarAngle={Math.PI / 2 + 0.05}
       />
