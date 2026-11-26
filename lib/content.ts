@@ -10,6 +10,8 @@ export const site = {
   nameZh: "吴卓熙",
   /** One line under the name in the hero. */
   tagline: "Computer Science Student @ University of Auckland",
+  /** Small line above the hero buttons. Leave "" to hide it. */
+  availability: "Open to 2026 internships · Auckland or remote",
   handle: "joseph.wu",
   email: "josephwu5354@gmail.com",
   // Any link left as "" is hidden automatically.
