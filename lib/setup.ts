@@ -67,6 +67,12 @@ export const racketColourways = {
 
 export const racketColours = racketColourways[racketColourway];
 
+/** My grip wrap: white, tinted grey so it still shows on a light page. */
+export const gripColours = {
+  wrap: "#dfe5ef",
+  seam: "#b9c3d6", // the overlap line of the wrap
+} as const;
+
 /**
  * The real colours of the rest of my kit. The 3D player (when an item
  * lights up) and the pixel icon on its card are both painted from these.
