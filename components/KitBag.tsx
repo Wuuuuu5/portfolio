@@ -72,13 +72,14 @@ export default function KitBag() {
     <section id="skills" className="wrap">
       <SectionHeading {...sections.skills} />
 
-      {/* The bag and the tubes share one grid cell and both stay mounted, so the section
-          is always as tall as the taller of the two and nothing below it jumps on open/close. */}
-      <div className="grid items-center">
+      {/* The bag and the tubes share one grid cell and both stay mounted. Only the one
+          showing takes up height (the other collapses to 0), so the closed bag doesn't
+          sit in the tower's much taller empty space; the page grows when you unzip. */}
+      <div className="grid items-start">
         <div
           key={open ? "bag-away" : "bag"}
           inert={open}
-          className={`grid justify-items-center [grid-area:1/1] ${open ? "invisible" : "animate-bag-in"}`}
+          className={`grid justify-items-center [grid-area:1/1] ${open ? "invisible h-0 overflow-hidden" : "animate-bag-in"}`}
         >
           <button
             ref={bagButton}
@@ -107,7 +108,7 @@ export default function KitBag() {
 
         <div
           inert={!open}
-          className={`[grid-area:1/1] ${open ? "" : "invisible"}`}
+          className={`[grid-area:1/1] ${open ? "" : "invisible h-0 overflow-hidden"}`}
         >
           {/* Keyed on open, so closing the bag puts every dragged block back. */}
           <Tower key={open ? "open" : "closed"} building={open} />
