@@ -115,13 +115,11 @@ export const equipment: Equipment[] = [
     brand: "Yonex",
     model: "Astrox 100 ZZ",
     specs: [
-      { label: "Weight", value: "[3U (88g) or 4U (83g)]" },
       { label: "Balance", value: "Head heavy" },
       { label: "Flex", value: "Extra stiff" },
       { label: "String", value: "Yonex BG80 Power" },
-      { label: "Tension", value: "[e.g. 26 lbs]" },
     ],
-    comment: "[Why you play with this racket, and what it suits in your game.]",
+    comment: "",
     image: "",
   },
   {
@@ -147,12 +145,8 @@ export const equipment: Equipment[] = [
     label: "Shoes",
     brand: "Yonex",
     model: "Power Cushion Eclipsion X",
-    specs: [
-      { label: "Size", value: "[your size]" },
-      { label: "Cushioning", value: "Power Cushion" },
-      { label: "Grip", value: "[e.g. gum rubber sole]" },
-    ],
-    comment: "[How they feel on court.]",
+    specs: [],
+    comment: "",
     image: "",
   },
   {
@@ -160,12 +154,8 @@ export const equipment: Equipment[] = [
     label: "Bag",
     brand: "Yonex",
     model: "Pro Tournament Bag 92231WEX",
-    specs: [
-      { label: "Colour", value: "Fine Blue" },
-      { label: "Holds", value: "[e.g. 6 rackets]" },
-      { label: "Compartments", value: "[e.g. thermal, shoe pocket]" },
-    ],
-    comment: "[What you carry in it.]",
+    specs: [{ label: "Colour", value: "Fine Blue" }],
+    comment: "",
     image: "",
   },
 ];
