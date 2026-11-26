@@ -21,7 +21,7 @@ export default function Projects() {
 }
 
 function ProjectCard({ project }: { project: Project }) {
-  const { name, blurb, learned, tags, year, kind, shot, href } = project;
+  const { name, blurb, tags, year, kind, shot, href } = project;
 
   // Cards without a link render as a plain block so there's no dead anchor.
   const Tag = href ? "a" : "div";
@@ -54,9 +54,6 @@ function ProjectCard({ project }: { project: Project }) {
           ) : null}
         </h3>
         <p className="mt-[0.7rem] max-w-[62ch] text-[0.98rem] text-fg-dim">{blurb}</p>
-        <p className="mt-4 max-w-[60ch] border-l-2 border-line-strong pl-[0.95rem] text-[0.9rem] text-fg-faint transition-[border-color] duration-350 ease-soft group-hover:border-accent-2">
-          <b className="font-medium text-fg-dim">What it taught me:</b> {learned}
-        </p>
         <ul className={TAG_LIST}>
           {tags.map((tag) => (
             <li key={tag} className={TAG}>

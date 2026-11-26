@@ -1,12 +1,15 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { modelUrl, type EquipmentId } from "@/lib/setup";
 import PlayerModel from "./PlayerModel";
-import GLBPlayer from "./GLBPlayer";
+
+// The GLTF/Draco/Meshopt loaders are only fetched if a custom model is set,
+// so the voxel player's bundle doesn't carry them.
+const GLBPlayer = lazy(() => import("./GLBPlayer"));
 import { Blocker, VoxelDisc } from "./parts";
 import { useThemeColors } from "./useThemeColors";
 
@@ -27,6 +30,10 @@ type Props = {
 /** Turn the player a little so the first view is three-quarter, not flat on,
     with their racket (right) side toward the camera. */
 const START_TURN = 0.45;
+
+/** Camera circling the player: negative = anticlockwise seen from above,
+    positive = clockwise. 2 = one lap every 30s. Off for reduced motion. */
+const ORBIT_SPEED = -0.4;
 
 /**
  * Projects the active item's anchor to screen pixels each time a frame is
@@ -102,6 +109,8 @@ export default function SetupScene({ active, onHover, onSelect, onLeader, reduce
         enableDamping={!reducedMotion}
         dampingFactor={0.08}
         rotateSpeed={0.7}
+        autoRotate={!reducedMotion}
+        autoRotateSpeed={ORBIT_SPEED}
         minPolarAngle={Math.PI / 2 - 0.35}
         maxPolarAngle={Math.PI / 2 + 0.05}
       />

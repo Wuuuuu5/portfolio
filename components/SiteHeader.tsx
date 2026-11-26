@@ -4,10 +4,15 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { site } from "@/lib/content";
 import Shuttle from "./Shuttle";
 
+// Every section, in page order, so the mobile menu's 01–07 match the
+// section numbers on the page.
 const links = [
-  { href: "#work", label: "Projects" },
-  { href: "#experience", label: "Experience" },
   { href: "#about", label: "About" },
+  { href: "#experience", label: "Experience" },
+  { href: "#work", label: "Projects" },
+  { href: "#skills", label: "Stack" },
+  { href: "#beyond", label: "Beyond" },
+  { href: "#setup", label: "Setup" },
   { href: "#contact", label: "Contact" },
 ];
 
@@ -26,6 +31,34 @@ export default function SiteHeader() {
   );
 
   const [open, setOpen] = useState(false);
+
+  // Which section is on screen, so its link can show where you are: the last
+  // one whose top has passed 40% of the way down the screen (none over the hero).
+  const [current, setCurrent] = useState<string | null>(null);
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.4;
+      let found: string | null = null;
+      for (const l of links) {
+        const el = document.querySelector(l.href);
+        if (el && el.getBoundingClientRect().top <= line) found = l.href;
+      }
+      setCurrent(found);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 
   // The menu covers the page, so the page behind it shouldn't scroll — and
   // Escape should always get you out of it.
@@ -74,12 +107,13 @@ export default function SiteHeader() {
           </span>
         </a>
 
-        <div className="ml-auto flex gap-7 text-[0.875rem] text-fg-dim max-[760px]:hidden">
+        <div className="ml-auto flex gap-6 text-[0.875rem] text-fg-dim max-[960px]:hidden">
           {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="relative transition-colors duration-250 after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-[width] after:duration-300 after:ease-soft after:content-[''] hover:text-fg hover:after:w-full"
+              aria-current={current === link.href ? "location" : undefined}
+              className="relative transition-colors duration-250 after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 after:bg-accent after:transition-[width] after:duration-300 after:ease-soft after:content-[''] hover:text-fg hover:after:w-full aria-[current]:text-fg aria-[current]:after:w-full"
             >
               {link.label}
             </a>
@@ -101,7 +135,7 @@ export default function SiteHeader() {
         {/* Mobile only, where the links above are hidden. */}
         <button
           type="button"
-          className="group/menu ml-[0.6rem] hidden size-9 cursor-pointer place-content-center justify-items-center gap-[5px] rounded-[10px] border border-line-strong transition-colors duration-250 hover:border-accent max-[760px]:grid"
+          className="group/menu ml-[0.6rem] hidden size-9 cursor-pointer place-content-center justify-items-center gap-[5px] rounded-[10px] border border-line-strong transition-colors duration-250 hover:border-accent max-[960px]:grid"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="mobile-nav"
@@ -118,7 +152,7 @@ export default function SiteHeader() {
           animate in instead. */}
       <div
         id="mobile-nav"
-        className={`hidden flex-col border-t border-line bg-bg/94 px-[var(--gutter)] pt-1 pb-7 backdrop-blur-[14px] ${open ? "max-[760px]:flex" : ""}`}
+        className={`hidden flex-col border-t border-line bg-bg/94 px-[var(--gutter)] pt-1 pb-7 backdrop-blur-[14px] ${open ? "max-[960px]:flex" : ""}`}
         hidden={!open}
       >
         {links.map((link, i) => (

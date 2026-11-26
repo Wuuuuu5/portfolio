@@ -6,7 +6,7 @@ import Shuttle from "./Shuttle";
 const socials = [
   { href: site.github, label: "GitHub" },
   { href: site.linkedin, label: "LinkedIn" },
-  { href: site.resume, label: "Résumé" },
+  { href: site.resume, label: "CV" },
   { href: site.writing, label: "Writing" },
 ].filter((s) => s.href);
 
@@ -15,7 +15,9 @@ export default function Contact() {
     <section
       id="contact"
       // Half a court receding into the dark behind the closing pitch (::before).
-      className="relative overflow-hidden py-[clamp(5rem,14vh,9rem)] before:pointer-events-none before:absolute before:inset-x-0 before:-bottom-[35%] before:-z-1 before:h-[70%] before:bg-[radial-gradient(50%_60%_at_50%_100%,var(--glow),transparent_70%)] before:opacity-55 before:blur-[24px] before:content-['']"
+      // At least a full screen tall, so when you land on Contact the section
+      // above (the 3D player) is scrolled fully out of view.
+      className="relative flex min-h-svh flex-col justify-center overflow-hidden py-[clamp(5rem,14vh,9rem)] before:pointer-events-none before:absolute before:inset-x-0 before:-bottom-[35%] before:-z-1 before:h-[70%] before:bg-[radial-gradient(50%_60%_at_50%_100%,var(--glow),transparent_70%)] before:opacity-55 before:blur-[24px] before:content-['']"
     >
       <div className="wrap grid justify-items-center text-center">
         <Reveal

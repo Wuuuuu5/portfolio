@@ -10,12 +10,14 @@ export const site = {
   nameZh: "吴卓熙",
   /** One line under the name in the hero. */
   tagline: "Computer Science Student @ University of Auckland",
+  /** Small line above the hero buttons. Leave "" to hide it. */
+  availability: "Open to 2026 internships · Auckland or remote",
   handle: "joseph.wu",
   email: "josephwu5354@gmail.com",
   // Any link left as "" is hidden automatically.
   github: "https://github.com/Wuuuuu5",
-  linkedin: "https://www.linkedin.com/in/joseph-wu-1741962bb/",
-  resume: "",
+  linkedin: "https://www.linkedin.com/in/josephwu02/",
+  resume: "/cv.pdf",
   writing: "",
 } as const;
 
@@ -37,10 +39,10 @@ export const stack: string[] = [
  */
 export const sections = {
   work: {
-    num: "01",
+    num: "03",
     kicker: "The rally",
-    title: "Things I've built",
-    note: "Each one started as a problem I actually had. Two are still in progress — that's honest, not a disclaimer.",
+    title: "Projects",
+    note: "",
   },
   experience: {
     num: "02",
@@ -49,13 +51,19 @@ export const sections = {
     note: "Shipping alongside other engineers, to a real client, on a deadline.",
   },
   about: {
-    num: "03",
+    num: "01",
     kicker: "The player",
     title: "About",
     note: "",
   },
-  beyond: {
+  skills: {
     num: "04",
+    kicker: "Kit bag",
+    title: "Tech stack",
+    note: "",
+  },
+  beyond: {
+    num: "05",
     kicker: "Off court",
     title: "Beyond the code",
     note: "Study, plus the years of captaining teams that taught me most of what I know about working with people.",
@@ -66,8 +74,6 @@ export type Project = {
   name: string;
   /** What it does, then the hardest part and how you solved it. */
   blurb: string;
-  /** The thing you understand now that you didn't before. */
-  learned: string;
   tags: string[];
   year: string;
   kind: string;
@@ -79,11 +85,9 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    name: "WEB3UOA Club Platform",
+    name: "WEB3 UoA",
     blurb:
       "The official site for the University of Auckland's Web3 and blockchain club, built in a WDCC team of ten, where members sign in with their crypto wallet. I started on the front end — navigation, the dark/light theme, and redesigns of the About, Events, Partners and wallet pages — then moved to the backend: QR event check-in, where every member has a personal QR code that admins scan with their phone camera to mark attendance, and admin management with user search and an audit trail of who granted or revoked access.",
-    learned:
-      "That a check-in code is a security feature, not a UI one. My first version issued short-lived tokens per event and stored only their hash; we replaced it with a per-member QR secret, which turned out simpler and harder to share around.",
     tags: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS"],
     year: "2026",
     kind: "WDCC · Team of 10",
@@ -94,8 +98,6 @@ export const projects: Project[] = [
     name: "AI Badminton Shot & Rally Analysis",
     blurb:
       "A computer vision system that detects and tracks shuttlecock trajectory from match footage, with player movement and shot detection built on a fine-tuned YOLOv8 model. It came out of my own competitive badminton — I wanted the analysis I could never get courtside.",
-    learned:
-      "That tracking a small, fast object through occlusion and motion blur is a data problem long before it's a model problem.",
     tags: ["Python", "OpenCV", "YOLOv8"],
     year: "2025 — present",
     kind: "Personal · In progress",
@@ -106,8 +108,6 @@ export const projects: Project[] = [
     name: "Travelog",
     blurb:
       "A hotel price comparison app for New Zealand travel: search a destination, dates and guests, and compare prices across booking providers side by side. It started as a Vite and Express prototype, which I rebuilt from scratch on the Next.js App Router, moving the backend into route handlers, converting everything to strict TypeScript, and adding Supabase email sign-in. A GitHub Actions pipeline builds, type-checks and lints every pull request before it can merge. Next up: the results page, live pricing and a map view.",
-    learned:
-      "That auth is mostly about where code runs. Keeping a Supabase session valid across Server Components, Client Components and middleware meant cookie-based sessions refreshed on every request, not a token sitting in the browser.",
     tags: ["Next.js", "TypeScript", "Supabase", "GitHub Actions"],
     year: "2025 — present",
     kind: "Personal · In progress",
@@ -130,15 +130,23 @@ export const experience: Role[] = [
     org: "WDCC — Web Development for Community & Clients",
     when: "2025",
     blurb:
-      "Built a client-facing crypto wallet address search platform with a project manager and seven other engineers in an Agile team. I worked on the React and TypeScript front end, implementing wallet address search and lookup, and presented live demos to client stakeholders — explaining technical decisions, gathering feedback, and folding it into the UI across sprints.",
-    tags: ["React", "TypeScript", "Tailwind CSS", "Agile"],
+      "I worked full stack as one of eight engineers, plus a project manager, building for a real client. Most of my time went into rebuilding the front end in React and TypeScript, and I built an internal QR code scanner that admins used to check people in and take attendance. I also worked directly with the client: I ran demos, talked them through why we'd built things the way we had, and took their feedback into the next sprint.",
+    tags: ["React", "TypeScript", "Tailwind CSS"],
+  },
+  {
+    title: "Badminton Coach",
+    org: "Auckland Badminton Association",
+    when: "2025 — present",
+    blurb:
+      "I help coach the under-15 national squad. That means running drills at training, working with players on technique and footwork, and backing the head coach on what each player needs to work on next. Most of it is explaining the same idea three different ways until it clicks for that particular kid.",
+    tags: [],
   },
 ];
 
 export const about: string[] = [
-  "I'm a Computer Science student at the University of Auckland, finishing in 2026.",
-  "Most of what I know came from building something slightly beyond what I could already do and refusing to stop until it ran. The badminton analysis tool is the clearest example — I picked up computer vision because I wanted an answer about my own game that no existing tool would give me.",
-  "The rest comes from working with other people: seven engineers and a real client at WDCC, a three-person team at university. What I want next is the part I can't get on my own — a codebase bigger than my head, and reviewers who'll tell me when I'm doing it the hard way.",
+  "Hi, I'm Joseph — a Computer Science student at the University of Auckland, finishing in 2027.",
+  "I like building things that are slightly beyond what I can already do, then sticking with them until they work. Most of my projects start from something I actually care about, like the badminton analysis tool I built to get answers about my own game.",
+  "In my spare time I'm usually playing badminton, coaching it, or coding something new.",
 ];
 
 export const skills: { group: string; items: string[] }[] = [
@@ -161,11 +169,11 @@ export const skills: { group: string; items: string[] }[] = [
 export const beyond: { label: string; body: string }[] = [
   {
     label: "Studying",
-    body: "BSc in Computer Science at the University of Auckland, expected 2026.",
+    body: "BSc in Computer Science at the University of Auckland, expected 2027.",
   },
   {
     label: "Captaining",
-    body: "Team captain and head coach of a national-level badminton team for three years, running the training programmes for two of them.",
+    body: "Team captain of a national-level badminton team for three years.",
   },
   {
     label: "Competing",
@@ -174,7 +182,7 @@ export const beyond: { label: string; body: string }[] = [
 ];
 
 export const contact = {
-  kicker: "Match point",
+  kicker: "Let's connect",
   heading: "Looking for a 2026 internship.",
   body: "Backend or full-stack, in Auckland or remote. If you've got a team that reviews code carefully, I'd like to talk.",
 } as const;

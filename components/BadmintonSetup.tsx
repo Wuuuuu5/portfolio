@@ -15,12 +15,31 @@ import SectionHeading from "./SectionHeading";
 import PixelIcon from "./setup/PixelIcon";
 import type { LeaderPoint } from "./setup/SetupScene";
 
-// The 3D bundle (three.js, R3F, drei) is only downloaded when the section is
-// about to scroll into view, and never rendered on the server.
-const SetupScene = dynamic(() => import("./setup/SetupScene"), {
+// The 3D bundle (three.js, R3F, drei) is kept out of the first page load and
+// never rendered on the server. It's fetched in the background once the page
+// is idle (see below), so it's usually cached before the section arrives.
+const loadScene = () => import("./setup/SetupScene");
+const SetupScene = dynamic(loadScene, {
   ssr: false,
   loading: () => <StageMessage>Loading the player…</StageMessage>,
 });
+
+/** Run `fn` once the page has loaded and the browser has a quiet moment. */
+function whenIdle(fn: () => void) {
+  let idleId: number | undefined;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const schedule = () => {
+    if ("requestIdleCallback" in window) idleId = window.requestIdleCallback(fn, { timeout: 3000 });
+    else timer = setTimeout(fn, 1500);
+  };
+  if (document.readyState === "complete") schedule();
+  else window.addEventListener("load", schedule, { once: true });
+  return () => {
+    window.removeEventListener("load", schedule);
+    if (idleId !== undefined) window.cancelIdleCallback(idleId);
+    if (timer !== undefined) clearTimeout(timer);
+  };
+}
 
 /** Wide screen with a real mouse: card docks inside the stage with a leader line. */
 const WIDE_QUERY = "(min-width: 900px) and (hover: hover) and (pointer: fine)";
@@ -53,12 +72,21 @@ export default function BadmintonSetup() {
 
   const [near, setNear] = useState(false);
   const [hovered, setHovered] = useState<EquipmentId | null>(null);
-  const [selected, setSelected] = useState<EquipmentId>(equipment[0].id);
+  // Touch screens only (no hover there): the item last tapped, tap again to close.
+  const [selected, setSelected] = useState<EquipmentId | null>(null);
+  const toggleSelected = useCallback(
+    (id: EquipmentId) => setSelected((current) => (current === id ? null : id)),
+    [],
+  );
 
   const wide = useMediaQuery(WIDE_QUERY);
   const reducedMotion = useMediaQuery(REDUCED_QUERY);
 
-  // Start loading 3D a screen before the section arrives, so it's ready.
+  // Download the 3D code in the background as soon as the page is idle.
+  useEffect(() => whenIdle(() => void loadScene()), []);
+
+  // Mount the scene (WebGL setup, shader compile) well before the section
+  // arrives, so the player is already drawn when it scrolls into view.
   useEffect(() => {
     const el = sectionRef.current;
     if (!el || typeof IntersectionObserver === "undefined") {
@@ -71,7 +99,7 @@ export default function BadmintonSetup() {
         setNear(true);
         observer.disconnect();
       },
-      { rootMargin: "600px 0px" },
+      { rootMargin: "1200px 0px" },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -103,8 +131,13 @@ export default function BadmintonSetup() {
     [wide],
   );
 
-  const activeId = hovered ?? selected;
-  const active = equipment.find((e) => e.id === activeId) ?? equipment[0];
+  // With a mouse the card only shows while an item is hovered; on touch, while tapped.
+  const activeId = wide ? hovered : selected;
+
+  // Keep the last item in the card so it can fade out instead of blanking.
+  const [shownId, setShownId] = useState<EquipmentId>(equipment[0].id);
+  if (activeId && activeId !== shownId) setShownId(activeId);
+  const shown = equipment.find((e) => e.id === shownId) ?? equipment[0];
 
   return (
     <section id="setup" ref={sectionRef} className="wrap">
@@ -122,7 +155,7 @@ export default function BadmintonSetup() {
                 // Touch screens fire a "hover" on tap that never clears, so
                 // there the tap (onSelect) alone decides what's shown.
                 onHover={wide ? setHovered : ignoreHover}
-                onSelect={setSelected}
+                onSelect={toggleSelected}
                 onLeader={onLeader}
                 reducedMotion={reducedMotion}
               />
@@ -139,8 +172,15 @@ export default function BadmintonSetup() {
         </svg>
 
         {wide ? (
-          <div ref={cardRef} className="absolute right-6 top-6 w-[270px]" aria-live="polite">
-            <EquipmentCard item={active} />
+          <div
+            ref={cardRef}
+            className={`absolute right-6 top-6 w-[270px] transition-[opacity,translate] duration-200 ${
+              activeId ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"
+            }`}
+            aria-live="polite"
+            aria-hidden={!activeId}
+          >
+            <EquipmentCard item={shown} />
           </div>
         ) : null}
 
@@ -155,7 +195,7 @@ export default function BadmintonSetup() {
               key={item.id}
               type="button"
               aria-pressed={item.id === activeId}
-              onClick={() => setSelected(item.id)}
+              onClick={() => toggleSelected(item.id)}
               onMouseEnter={() => setHovered(item.id)}
               onMouseLeave={() => setHovered(null)}
               onFocus={() => setHovered(item.id)}
@@ -168,10 +208,10 @@ export default function BadmintonSetup() {
         </div>
       </div>
 
-      {wide ? null : (
+      {wide || !activeId ? null : (
         <div className="mt-4 flex justify-center" aria-live="polite">
           <div className="w-full max-w-[460px]">
-            <EquipmentCard item={active} />
+            <EquipmentCard item={shown} />
           </div>
         </div>
       )}
@@ -195,13 +235,14 @@ export default function BadmintonSetup() {
 export function EquipmentCard({ item }: { item: Equipment }) {
   return (
     <article className="rounded-md border border-line-strong bg-bg/90 p-5 text-left text-fg shadow-[0_18px_40px_-24px_var(--fg)] backdrop-blur-md">
-      <div className="mb-4 flex h-32 items-center justify-center">
+      {/* The racket is long and detailed, so it gets a taller frame. */}
+      <div className={`mb-4 flex items-center justify-center ${item.id === "racket" ? "h-52" : "h-32"}`}>
         {item.image ? (
           // Plain <img>: product shots are small, optional and user-supplied.
           // eslint-disable-next-line @next/next/no-img-element
           <img className="max-h-full max-w-full object-contain" src={item.image} alt={`${item.brand} ${item.model}`} loading="lazy" />
         ) : (
-          <PixelIcon id={item.id} className="h-full w-auto" />
+          <PixelIcon key={item.id} id={item.id} className="h-full w-auto" />
         )}
       </div>
 

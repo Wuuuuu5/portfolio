@@ -108,6 +108,39 @@
   --animate-drop-in: drop-in 0.75s var(--ease) 1.2s backwards;
   --animate-sheet-in: sheet-in 0.45s var(--ease) backwards;
 
+  /* Kit card pixel art draws itself in, one row of pixels after another.
+     Each row sets --row; see PixelIcon. */
+  --animate-pixel-row: pixel-row 0.16s var(--ease) calc(var(--row, 0) * 14ms) backwards;
+
+  /* Kit bag: the bag comes back when it's zipped up again, and each shuttle
+     tube pops out with a little overshoot. Tubes set --i; see KitBag. */
+  --animate-bag-in: bag-in 0.5s var(--ease-shuttle) backwards;
+  --animate-tube-pop: tube-pop 0.6s var(--ease-shuttle) calc(var(--i, 0) * 110ms) backwards;
+
+  @keyframes bag-in {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+  }
+  @keyframes tube-pop {
+    0% {
+      opacity: 0;
+      transform: translateY(-40px) scale(0.7);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(6px) scale(1.02);
+    }
+  }
+
+  @keyframes pixel-row {
+    from {
+      opacity: 0;
+      transform: translateX(-0.6px);
+    }
+  }
+
   @keyframes drop-in {
     from {
       transform: translateY(-100%);
@@ -317,7 +350,7 @@ a {
 
 /* Every section gets the same vertical rhythm. */
 section {
-  padding-block: clamp(4.5rem, 11vh, 8rem);
+  padding-block: clamp(3.5rem, 8vh, 6rem);
   position: relative;
 }
 }

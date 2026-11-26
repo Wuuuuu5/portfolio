@@ -8,7 +8,12 @@ import Reveal from "./Reveal";
  */
 const LOADER_MS = 1250;
 
-/** The hero is my name, with one line under it. Hover the name to see it in Chinese. */
+const button =
+  "inline-flex min-h-11 items-center rounded-full border px-6 text-[0.9rem] font-medium transition-all duration-300 ease-flight hover:-translate-y-[2px]";
+const quiet = "border-line-strong bg-bg-elev/65 text-fg hover:border-accent hover:text-accent";
+
+/** The hero is my name, one line under it, then what I'm after and where to go next.
+    Hover the name to see it in Chinese. */
 export default function Hero() {
   return (
     <div id="top" className="wrap grid min-h-[calc(100svh-68px)] place-items-center py-16">
@@ -22,6 +27,31 @@ export default function Hero() {
           <p className="mt-[calc(clamp(3.5rem,13vw,11rem)*0.42+1.75rem)] font-mono text-[clamp(0.8rem,1.6vw,1rem)] tracking-[0.14em] text-balance text-center text-fg-dim uppercase">
             {site.tagline}
           </p>
+        </Reveal>
+        <Reveal delay={LOADER_MS + 350} className="mt-10 flex flex-col items-center gap-5">
+          {site.availability ? (
+            <p className="inline-flex items-center gap-2 text-[0.85rem] text-fg-dim">
+              {/* A soft pulse: "available now". Still for reduced motion. */}
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
+                <span className="relative inline-flex size-2 rounded-full bg-accent" />
+              </span>
+              {site.availability}
+            </p>
+          ) : null}
+          <div className="flex flex-wrap justify-center gap-3">
+            <a href="#work" className={`${button} border-accent bg-accent text-accent-ink hover:shadow-[0_16px_40px_-18px_var(--accent)]`}>
+              View projects
+            </a>
+            {site.resume ? (
+              <a href={site.resume} target="_blank" rel="noreferrer noopener" className={`${button} ${quiet}`}>
+                CV
+              </a>
+            ) : null}
+            <a href={`mailto:${site.email}`} className={`${button} ${quiet}`}>
+              Email me
+            </a>
+          </div>
         </Reveal>
       </div>
     </div>
