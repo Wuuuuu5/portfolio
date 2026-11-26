@@ -72,7 +72,12 @@ export default function BadmintonSetup() {
 
   const [near, setNear] = useState(false);
   const [hovered, setHovered] = useState<EquipmentId | null>(null);
-  const [selected, setSelected] = useState<EquipmentId>(equipment[0].id);
+  // Touch screens only (no hover there): the item last tapped, tap again to close.
+  const [selected, setSelected] = useState<EquipmentId | null>(null);
+  const toggleSelected = useCallback(
+    (id: EquipmentId) => setSelected((current) => (current === id ? null : id)),
+    [],
+  );
 
   const wide = useMediaQuery(WIDE_QUERY);
   const reducedMotion = useMediaQuery(REDUCED_QUERY);
@@ -126,8 +131,13 @@ export default function BadmintonSetup() {
     [wide],
   );
 
-  const activeId = hovered ?? selected;
-  const active = equipment.find((e) => e.id === activeId) ?? equipment[0];
+  // With a mouse the card only shows while an item is hovered; on touch, while tapped.
+  const activeId = wide ? hovered : selected;
+
+  // Keep the last item in the card so it can fade out instead of blanking.
+  const [shownId, setShownId] = useState<EquipmentId>(equipment[0].id);
+  if (activeId && activeId !== shownId) setShownId(activeId);
+  const shown = equipment.find((e) => e.id === shownId) ?? equipment[0];
 
   return (
     <section id="setup" ref={sectionRef} className="wrap">
@@ -145,7 +155,7 @@ export default function BadmintonSetup() {
                 // Touch screens fire a "hover" on tap that never clears, so
                 // there the tap (onSelect) alone decides what's shown.
                 onHover={wide ? setHovered : ignoreHover}
-                onSelect={setSelected}
+                onSelect={toggleSelected}
                 onLeader={onLeader}
                 reducedMotion={reducedMotion}
               />
@@ -162,8 +172,15 @@ export default function BadmintonSetup() {
         </svg>
 
         {wide ? (
-          <div ref={cardRef} className="absolute right-6 top-6 w-[270px]" aria-live="polite">
-            <EquipmentCard item={active} />
+          <div
+            ref={cardRef}
+            className={`absolute right-6 top-6 w-[270px] transition-[opacity,translate] duration-200 ${
+              activeId ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"
+            }`}
+            aria-live="polite"
+            aria-hidden={!activeId}
+          >
+            <EquipmentCard item={shown} />
           </div>
         ) : null}
 
@@ -178,7 +195,7 @@ export default function BadmintonSetup() {
               key={item.id}
               type="button"
               aria-pressed={item.id === activeId}
-              onClick={() => setSelected(item.id)}
+              onClick={() => toggleSelected(item.id)}
               onMouseEnter={() => setHovered(item.id)}
               onMouseLeave={() => setHovered(null)}
               onFocus={() => setHovered(item.id)}
@@ -191,10 +208,10 @@ export default function BadmintonSetup() {
         </div>
       </div>
 
-      {wide ? null : (
+      {wide || !activeId ? null : (
         <div className="mt-4 flex justify-center" aria-live="polite">
           <div className="w-full max-w-[460px]">
-            <EquipmentCard item={active} />
+            <EquipmentCard item={shown} />
           </div>
         </div>
       )}
