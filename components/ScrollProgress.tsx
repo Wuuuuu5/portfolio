@@ -64,7 +64,7 @@ export default function ScrollProgress() {
     <div className="pointer-events-none fixed inset-x-0 top-[61px] z-60 h-[14px]" aria-hidden="true">
       <div
         ref={barRef}
-        className="absolute top-[6px] left-0 h-[2px] w-full origin-left [transform:scaleX(0)] bg-[linear-gradient(90deg,var(--accent-2),var(--accent))] shadow-[0_0_14px_var(--glow)]"
+        className="absolute top-[6px] left-0 h-[2px] w-full origin-left [transform:scaleX(0)] bg-[linear-gradient(90deg,var(--accent-2),var(--accent))]"
       />
       {/* Rides the leading edge of the bar, centred on the line (6px + 1px). */}
       <div
@@ -72,7 +72,7 @@ export default function ScrollProgress() {
         className="absolute top-[7px] left-0 leading-none opacity-0 transition-opacity duration-300 ease-soft max-[640px]:hidden"
       >
         {/* Drawn cork-down; turned -90° so the cork leads to the right. */}
-        <Shuttle className="size-4 rotate-[-90deg] text-accent drop-shadow-[0_0_8px_var(--glow)]" />
+        <Shuttle className="size-4 rotate-[-90deg] text-accent" />
       </div>
     </div>
   );

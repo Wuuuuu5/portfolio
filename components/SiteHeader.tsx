@@ -100,7 +100,7 @@ export default function SiteHeader() {
       <nav className="wrap flex h-[68px] items-center gap-6">
         <a href="#top" className="group/brand flex items-center gap-[0.55rem] font-mono font-semibold tracking-[-0.02em]">
           {/* A flick of the wrist on hover. */}
-          <Shuttle className="h-auto w-[17px] text-accent drop-shadow-[0_0_8px_var(--glow)] transition-transform duration-500 ease-flight group-hover/brand:-translate-y-[2px] group-hover/brand:rotate-[-22deg]" />
+          <Shuttle className="h-auto w-[17px] text-accent transition-transform duration-500 ease-flight group-hover/brand:-translate-y-[2px] group-hover/brand:rotate-[-22deg]" />
           {site.handle}
           <span lang="zh-CN" className="font-sans font-normal tracking-normal text-fg-dim">
             {site.nameZh}

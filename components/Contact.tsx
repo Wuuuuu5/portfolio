@@ -17,14 +17,14 @@ export default function Contact() {
       // Half a court receding into the dark behind the closing pitch (::before).
       // At least a full screen tall, so when you land on Contact the section
       // above (the 3D player) is scrolled fully out of view.
-      className="relative flex min-h-svh flex-col justify-center overflow-hidden py-[clamp(5rem,14vh,9rem)] before:pointer-events-none before:absolute before:inset-x-0 before:-bottom-[35%] before:-z-1 before:h-[70%] before:bg-[radial-gradient(50%_60%_at_50%_100%,var(--glow),transparent_70%)] before:opacity-55 before:blur-[24px] before:content-['']"
+      className="relative flex min-h-svh flex-col justify-center overflow-hidden py-[clamp(5rem,14vh,9rem)]"
     >
       <div className="wrap grid justify-items-center text-center">
         <Reveal
           as="p"
           className="mb-[1.4rem] inline-flex items-center gap-[0.6rem] font-mono text-[0.72rem] tracking-[0.24em] text-accent uppercase"
         >
-          <Shuttle className="h-auto w-[15px] drop-shadow-[0_0_8px_var(--glow)]" />
+          <Shuttle className="h-auto w-[15px]" />
           {contact.kicker}
         </Reveal>
 

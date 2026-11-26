@@ -5,13 +5,12 @@
 
 /**
  * The hover treatment: the background lifts, a service line paints down the
- * left edge (::before) and a wash of hall light follows it (::after). Put
+ * left edge (::before). Put
  * `group` on the same element so children can react (see TAG).
  */
 export const SERVICE_CARD =
   "group relative overflow-hidden bg-bg transition-[background] duration-350 ease-soft hover:bg-bg-elev " +
-  "before:absolute before:inset-y-0 before:left-0 before:w-[2px] before:origin-top before:[transform:scaleY(0)] before:bg-accent before:shadow-[0_0_14px_var(--glow)] before:transition-transform before:duration-550 before:ease-soft before:content-[''] hover:before:[transform:scaleY(1)] " +
-  "after:pointer-events-none after:absolute after:inset-0 after:bg-[linear-gradient(100deg,var(--glow),transparent_42%)] after:opacity-0 after:transition-opacity after:duration-450 after:ease-soft after:content-[''] hover:after:opacity-16";
+  "before:absolute before:inset-y-0 before:left-0 before:w-[2px] before:origin-top before:[transform:scaleY(0)] before:bg-accent before:transition-transform before:duration-550 before:ease-soft before:content-[''] hover:before:[transform:scaleY(1)]";
 
 /** A tech tag that warms up when its card is hovered. */
 export const TAG =

@@ -13,7 +13,7 @@ export default function SectionHeading({ num, kicker, title, note }: Props) {
     <Reveal
       // A chalk baseline under every heading, with the accent segment a
       // service line would have (the ::after).
-      className="relative mb-11 flex flex-wrap items-end justify-between gap-x-10 gap-y-6 border-b border-line pb-5 after:absolute after:-bottom-px after:left-0 after:h-[2px] after:w-[84px] after:bg-accent after:shadow-[0_0_12px_var(--glow)] after:content-['']"
+      className="relative mb-11 flex flex-wrap items-end justify-between gap-x-10 gap-y-6 border-b border-line pb-5 after:absolute after:-bottom-px after:left-0 after:h-[2px] after:w-[84px] after:bg-accent after:content-['']"
     >
       <div className="min-w-0">
         <p className="mb-[0.7rem] flex items-center gap-[0.7rem] font-mono text-[0.72rem] tracking-[0.22em] text-accent uppercase">
