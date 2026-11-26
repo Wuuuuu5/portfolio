@@ -1,79 +1,29 @@
-import { hero, site, stats } from "@/lib/content";
-import Court from "./Court";
+import { site } from "@/lib/content";
+import NameSwap from "./NameSwap";
 import Reveal from "./Reveal";
-import styles from "./Hero.module.css";
 
 /**
- * How long the intro curtain owns the screen. The hero staggers in behind it
- * so the two read as one motion. Keep in sync with Loader.module.css.
+ * How long the intro curtain owns the screen. The name fades in behind it so
+ * the two read as one motion. Keep in sync with animate-lift in globals.css.
  */
 const LOADER_MS = 1250;
 
+/** The hero is my name, with one line under it. Hover the name to see it in Chinese. */
 export default function Hero() {
   return (
-    <div className={styles.hero} id="top">
-      <div className={`${styles.grid} wrap`}>
-        <div className={styles.copy}>
-          <Reveal as="p" className={styles.eyebrow} delay={LOADER_MS}>
-            {site.role}
-          </Reveal>
-
-          <Reveal as="h1" className={styles.title} delay={LOADER_MS + 90}>
-            {hero.headlineBefore}
-            <span className={styles.grad}>{hero.headlineAccent}</span>
-            {hero.headlineAfter}
-          </Reveal>
-
-          <Reveal as="p" className={styles.lede} delay={LOADER_MS + 180}>
-            {hero.lede}
-          </Reveal>
-
-          <Reveal className={styles.cta} delay={LOADER_MS + 270}>
-            <a href="#work" className={`${styles.btn} ${styles.primary}`}>
-              See what I&apos;ve built
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                aria-hidden="true"
-              >
-                <path d="M7 17 17 7M9 7h8v8" />
-              </svg>
-            </a>
-            <a
-              href={`mailto:${site.email}`}
-              className={`${styles.btn} ${styles.ghost}`}
-            >
-              Get in touch
-            </a>
-          </Reveal>
-
-          <Reveal delay={LOADER_MS + 360}>
-            <p className={styles.status}>
-              <i aria-hidden="true" />
-              {hero.status}
-            </p>
-          </Reveal>
-        </div>
-
-        <Reveal className={styles.visual} delay={LOADER_MS + 120}>
-          <Court />
+    <div id="top" className="wrap grid min-h-[calc(100svh-68px)] place-items-center py-16">
+      <div className="flex flex-col items-center">
+        <Reveal delay={LOADER_MS}>
+          <NameSwap />
+        </Reveal>
+        <Reveal delay={LOADER_MS + 200}>
+          {/* The court's floor line sits 0.42em (of the name's size) below the
+              letters, so clear that plus a gap. Font size matches NameSwap. */}
+          <p className="mt-[calc(clamp(3.5rem,13vw,11rem)*0.42+1.75rem)] font-mono text-[clamp(0.8rem,1.6vw,1rem)] tracking-[0.14em] text-balance text-center text-fg-dim uppercase">
+            {site.tagline}
+          </p>
         </Reveal>
       </div>
-
-      {/* The scoreboard strip — four numbers, chalk-ruled like a scoresheet. */}
-      <Reveal className={styles.scoreWrap} delay={LOADER_MS + 440}>
-        <dl className={`${styles.score} wrap`}>
-          {stats.map((stat) => (
-            <div key={stat.label} className={styles.stat}>
-              <dt className={styles.statValue}>{stat.value}</dt>
-              <dd className={styles.statLabel}>{stat.label}</dd>
-            </div>
-          ))}
-        </dl>
-      </Reveal>
     </div>
   );
 }

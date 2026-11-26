@@ -1,12 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+
+/**
+ * HTML tags only. A bare `ElementType` would also accept every three.js tag
+ * that React Three Fiber registers (<mesh>, <group>…), and TypeScript can't
+ * work out props that fit all of them.
+ */
+type RevealTag = "div" | "p" | "h1" | "h2" | "h3" | "span" | "li" | "article";
 
 type RevealProps = {
   children: ReactNode;
   /** Stagger within a group, in ms. */
   delay?: number;
-  as?: ElementType;
+  as?: RevealTag;
   className?: string;
 };
 
@@ -49,7 +56,11 @@ export default function Reveal({
 
   return (
     <Tag
-      ref={ref}
+      // A callback ref fits every tag in RevealTag; a RefObject<HTMLElement>
+      // would have to match each tag's exact element type at once.
+      ref={(node: HTMLElement | null) => {
+        ref.current = node;
+      }}
       className={`reveal ${className}`.trim()}
       data-visible={visible}
       style={delay ? { transitionDelay: `${delay}ms` } : undefined}
