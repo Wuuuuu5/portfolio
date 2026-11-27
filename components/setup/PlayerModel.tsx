@@ -99,6 +99,32 @@ const JERSEY_PATTERN = [
   "bbbpbbbb",
   "bbbbbbbb",
 ];
+/**
+ * The back of the shirt in half-size voxels (16 x 18) so a name fits: JWU
+ * across the shoulders and NZ below, in the logo colour, over the same white
+ * to light blue fade (brush strokes cleared from behind the letters).
+ * Drawn as seen from behind; the model's mirror in x keeps it readable.
+ */
+const JERSEY_BACK = [
+  "bbwwwwwwwwpppppp",
+  "bbwwwwwwwwpppppp",
+  "wwwwwwwwwwwwwwww",
+  "wwkkkwkwwwkwkwkw",
+  "wwwwkwkwwwkwkwkw",
+  "wwwwkwkwkwkwkwkw",
+  "wwkwkwkwkwkwkwkb",
+  "wwwkwwwkwkwwkkkb",
+  "bbwwwwwwwwbbwwww",
+  "bbwwwwwwwwbbbpww",
+  "ppbbkwwkwkkkbbww",
+  "ppbbkkwkwwwkbbww",
+  "bbpbkbkkwwkbbobb",
+  "bbpbkbwkwkbbbobb",
+  "bbbbkbbkbkkkbbbb",
+  "bbbbbbbbbbbbbbbb",
+  "bbbbbbbbbbbbbbbb",
+  "bbbbbbbbbbbbbbbb",
+];
 const JERSEY_TONES: Record<string, string> = {
   w: JERSEY.white,
   b: JERSEY.blue,
@@ -153,12 +179,22 @@ function paintRows(
 
 /** The torso's boxes, from JERSEY_PATTERN. */
 function jerseyBoxes() {
-  return paintRows(JERSEY_PATTERN, JERSEY_TONES, {
-    x0: -4,
-    y0: 0,
-    z: 0,
-    depth: 4,
-  });
+  return [
+    // front 3 voxels of the torso, then a 1-voxel back panel with the name
+    ...paintRows(JERSEY_PATTERN, JERSEY_TONES, {
+      x0: -4,
+      y0: 0,
+      z: 0.5,
+      depth: 3,
+    }),
+    ...paintRows(JERSEY_BACK, JERSEY_TONES, {
+      x0: -4,
+      y0: 0,
+      z: -1.5,
+      depth: 1,
+      cell: 0.5,
+    }),
+  ];
 }
 
 /**
