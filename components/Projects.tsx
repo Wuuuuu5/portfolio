@@ -53,7 +53,15 @@ function ProjectCard({ project }: { project: Project }) {
             </span>
           ) : null}
         </h3>
-        <p className="mt-[0.7rem] max-w-[62ch] text-[0.98rem] text-fg-dim">{blurb}</p>
+        {/* A blank line in the blurb starts a new paragraph. */}
+        {blurb.split("\n\n").map((para, i) => (
+          <p
+            key={i}
+            className={`${i ? "mt-3" : "mt-[0.7rem]"} max-w-[62ch] text-[0.98rem] text-fg-dim`}
+          >
+            {para}
+          </p>
+        ))}
         <ul className={TAG_LIST}>
           {tags.map((tag) => (
             <li key={tag} className={TAG}>
