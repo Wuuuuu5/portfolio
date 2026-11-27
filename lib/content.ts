@@ -87,7 +87,8 @@ export const projects: Project[] = [
   {
     name: "WEB3 UoA",
     blurb:
-      "The official site for the University of Auckland's Web3 and blockchain club, built in a WDCC team of ten, where members sign in with their crypto wallet. I started on the front end — navigation, the dark/light theme, and redesigns of the About, Events, Partners and wallet pages — then moved to the backend: QR event check-in, where every member has a personal QR code that admins scan with their phone camera to mark attendance, and admin management with user search and an audit trail of who granted or revoked access.",
+      "Built the official website for the University of Auckland's Web3 and Blockchain Club as part of a 10-person WDCC team. Members can connect their crypto wallets to sign in. I initially worked on the frontend, including navigation, dark and light mode, and redesigning the About, Events, Partners and wallet pages.\n\n" +
+      "I later moved on to backend features, including a QR code check-in system where admins can scan members' personal QR codes using their phone cameras to record attendance. I also worked on the admin management system, adding user search and an audit trail to track who granted or revoked admin access.",
     tags: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS"],
     year: "2026",
     kind: "WDCC · Team of 10",
@@ -97,7 +98,7 @@ export const projects: Project[] = [
   {
     name: "AI Badminton Shot & Rally Analysis",
     blurb:
-      "A computer vision system that detects and tracks shuttlecock trajectory from match footage, with player movement and shot detection built on a fine-tuned YOLOv8 model. It came out of my own competitive badminton — I wanted the analysis I could never get courtside.",
+      "A computer vision project that uses a fine-tuned YOLOv8 model to detect and track shuttlecock movement in badminton match footage. I'm also working on player tracking and shot detection to get more insight into what's happening during a match. The idea came from my own experience playing competitive badminton. I wanted to build a tool that could analyse matches and provide insights that are difficult to pick up just by watching courtside.",
     tags: ["Python", "OpenCV", "YOLOv8"],
     year: "2025 — present",
     kind: "Personal · In progress",
@@ -107,7 +108,7 @@ export const projects: Project[] = [
   {
     name: "Travelog",
     blurb:
-      "A hotel price comparison app for New Zealand travel: search a destination, dates and guests, and compare prices across booking providers side by side. It started as a Vite and Express prototype, which I rebuilt from scratch on the Next.js App Router, moving the backend into route handlers, converting everything to strict TypeScript, and adding Supabase email sign-in. A GitHub Actions pipeline builds, type-checks and lints every pull request before it can merge. Next up: the results page, live pricing and a map view.",
+      "A hotel price comparison app focused on helping people find and compare accommodation across New Zealand. Users can search by destination, dates and number of guests, with the aim of comparing prices across different booking providers in one place. I originally built it as a Vite and Express prototype before rebuilding it from scratch using Next.js App Router. I moved the backend into route handlers, switched to strict TypeScript, added Supabase email authentication and set up GitHub Actions to automatically build, type-check and lint every pull request. I'm currently working on the results page, live pricing and map view.",
     tags: ["Next.js", "TypeScript", "Supabase", "GitHub Actions"],
     year: "2025 — present",
     kind: "Personal · In progress",
@@ -130,7 +131,7 @@ export const experience: Role[] = [
     org: "WDCC — Web Development for Community & Clients",
     when: "2025",
     blurb:
-      "I worked full stack as one of eight engineers, plus a project manager, building for a real client. Most of my time went into rebuilding the front end in React and TypeScript, and I built an internal QR code scanner that admins used to check people in and take attendance. I also worked directly with the client: I ran demos, talked them through why we'd built things the way we had, and took their feedback into the next sprint.",
+      "Part of an eight-person engineering team working with a project manager to build a product for a real client. I mainly worked on the frontend, rebuilding it with React and TypeScript. I also built an internal QR code scanner that admins could use for event check-ins and attendance tracking. I had the chance to work directly with the client, show them our progress, explain technical decisions and make changes based on their feedback.",
     tags: ["React", "TypeScript", "Tailwind CSS"],
   },
   {
@@ -138,7 +139,7 @@ export const experience: Role[] = [
     org: "Auckland Badminton Association",
     when: "2025 — present",
     blurb:
-      "I help coach the under-15 national squad. That means running drills at training, working with players on technique and footwork, and backing the head coach on what each player needs to work on next. Most of it is explaining the same idea three different ways until it clicks for that particular kid.",
+      "Help coach the Under-15 national squad, running training drills and working with players to improve their technique and footwork. I also support the head coach by identifying areas where individual players can improve. A big part of coaching is finding different ways to explain things so each player can understand and put them into practice.",
     tags: [],
   },
 ];

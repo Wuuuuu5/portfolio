@@ -115,11 +115,17 @@ const JERSEY_TONES: Record<string, string> = {
 function paintRows(
   rows: string[],
   tones: Record<string, string>,
-  { x0, y0, z, depth }: { x0: number; y0: number; z: number; depth: number },
+  {
+    x0,
+    y0,
+    z,
+    depth,
+    cell = 1,
+  }: { x0: number; y0: number; z: number; depth: number; cell?: number },
 ) {
   const boxes: ReactNode[] = [];
   rows.forEach((row, r) => {
-    const y = y0 + rows.length - 1 - r;
+    const y = rows.length - 1 - r; // in cells, from the bottom
     for (let i = 0; i < row.length;) {
       let j = i;
       while (j + 1 < row.length && row[j + 1] === row[i]) j++;
@@ -128,9 +134,14 @@ function paintRows(
         boxes.push(
           <VoxelBox
             key={`${z}-${y}-${i}`}
-            size={[v(len), v(1), v(depth)]}
-            position={[v(x0 + i + len / 2), v(y + 0.5), v(z)]}
+            size={[v(len * cell), v(cell), v(depth)]}
+            position={[
+              v(x0 + (i + len / 2) * cell),
+              v(y0 + (y + 0.5) * cell),
+              v(z),
+            ]}
             tone={tones[row[i]]}
+            cell={cell === 1 ? undefined : v(cell)}
           />,
         );
       }
@@ -152,25 +163,33 @@ function jerseyBoxes() {
 
 /**
  * Yonex Pro Tournament Bag 92231W, Fine Blue (75 x 19 x 33 cm, so 15 x 4 x 7
- * voxels). The camera-side face, top row first: B blue panel, w white logo
- * and pinstripes, p purple and c blue camo shards, k black. Ends are rounded
- * off by leaving the corners empty (.). The back is the same, mirrored.
+ * voxels). Painted in half-size voxels (BAG_CELL) so the print reads: the
+ * camera-side face is 30 x 14, top row first. B blue panel, w white YONEX
+ * logo (emblem + letters) and pinstripes, p purple and c blue camo shards,
+ * k black. Ends are rounded off by leaving corners empty (.). The back is
+ * the same, mirrored.
  */
+const BAG_CELL = 0.5;
 const BAG_FRONT = [
-  ".BBBBBBBBcpkpc.",
-  "kBBBBBBBBBwcpkk",
-  "kBwBwwwwwBBwcpk",
-  "kBBBwwwwwBBBwck",
-  "kBBBBBBBBBBBBpk",
-  "kBBBBBBBBBBBBBk",
-  ".kkkkkkkkkkkkk.",
+  "..kkkkkkkkkkkkpkkkpkcwkwkkkp..",
+  ".kkkkkkkkkkkkkckkpkkkpwcwkpkk.",
+  "kBBBBBBBBBBBBBBBBBBBBBkwpwckkk",
+  "kBBBBBBBBBBBBBBBBBBBBBBpwkwpkk",
+  "kBBBBBBBBBBBBBBBBBBBBBBBkwpwkk",
+  "kBBBBBBBBBBBBBBBBBBBBBBBBkwkwk",
+  "kBBBBBBBBBBBBBBBBBBBBBBBBBkpkk",
+  "kBBBBwwBwBwBwwwBwBwBwwwBwBwkkk",
+  "kBBBwwBBwBwBwBwBwwwBwBBBwBwBkk",
+  "kBwwBwBBBwBBwBwBwwwBwwBBBwBBBk",
+  "kBwwBBBBBwBBwBwBwBwBwBBBwBwBBk",
+  "kBBBBBBBBwBBwwwBwBwBwwwBwBwBBk",
+  ".BBBBBBBBBBBBBBBBBBBBBBBBBBBB.",
+  "..kkkkkkkkkkkkkkkkkkkkkkkkkk..",
 ];
 /** The inside, between the faces: black, with the zip track along the top. */
-const BAG_CORE = [
-  ".zzzzzzzzzzzzz.",
-  ...BAG_FRONT.slice(1, -1).map((row) => "k".repeat(row.length)),
-  ".kkkkkkkkkkkkk.",
-];
+const BAG_CORE = BAG_FRONT.map((row, r) =>
+  [...row].map((c) => (c === "." ? "." : r === 0 ? "z" : "k")).join(""),
+);
 const BAG_TONES: Record<string, string> = {
   B: BAG.blue,
   w: BAG.white,
@@ -188,7 +207,7 @@ const HANDLE_POSTS = [5, 9];
 const HANDLE_RISE = 4;
 
 function bagBoxes() {
-  const top = BAG_FRONT.length;
+  const top = BAG_FRONT.length * BAG_CELL;
   const handle = (z: number) => [
     ...HANDLE_POSTS.map((x) => (
       <VoxelBox
@@ -215,12 +234,19 @@ function bagBoxes() {
       y0: 0,
       z: BAG_FRONT_Z,
       depth: 1,
+      cell: BAG_CELL,
     }),
-    ...paintRows(BAG_CORE, BAG_TONES, { x0: BAG_X, y0: 0, z: 1, depth: 2 }),
+    ...paintRows(BAG_CORE, BAG_TONES, {
+      x0: BAG_X,
+      y0: 0,
+      z: 1,
+      depth: 2,
+      cell: BAG_CELL,
+    }),
     ...paintRows(
       BAG_FRONT.map((row) => [...row].reverse().join("")),
       BAG_TONES,
-      { x0: BAG_X, y0: 0, z: BAG_BACK_Z, depth: 1 },
+      { x0: BAG_X, y0: 0, z: BAG_BACK_Z, depth: 1, cell: BAG_CELL },
     ),
     // zip pullers, one each side of the middle
     <VoxelBox
