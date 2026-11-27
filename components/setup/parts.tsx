@@ -292,7 +292,15 @@ function voxelColours(tone: string | undefined, colors: ThemeColors | undefined)
  * The voxel material. The colour climbs from idle to lit box by box as the
  * item's fill level rises past each voxel.
  */
-function VoxelMaterial({ size, tone }: { size: [number, number, number]; tone?: string }) {
+function VoxelMaterial({
+  size,
+  tone,
+  cell = CELL,
+}: {
+  size: [number, number, number];
+  tone?: string;
+  cell?: number;
+}) {
   const state = useContext(PartContext);
   const lit = state?.lit ?? false;
   const colors = state?.colors;
@@ -310,7 +318,7 @@ function VoxelMaterial({ size, tone }: { size: [number, number, number]; tone?: 
         uFillAlphaIdle: { value: 0.035 },
         uLineAlphaLit: { value: 0.9 },
         uFillAlphaLit: { value: 0.96 },
-        uCell: { value: CELL },
+        uCell: { value: cell },
         uHalf: { value: new THREE.Vector3(w / 2, h / 2, d / 2) },
         uLevel: { value: EMPTY },
         uBand: { value: GLOW_BAND },
@@ -324,8 +332,9 @@ function VoxelMaterial({ size, tone }: { size: [number, number, number]; tone?: 
       u.uLineLit.value.copy(seam);
       u.uFillLit.value.copy(fill);
       u.uHalf.value.set(w / 2, h / 2, d / 2);
+      u.uCell.value = cell;
     },
-    [tone, colors, w, h, d],
+    [tone, colors, w, h, d, cell],
     state?.level ?? NEVER_LIT,
   );
 
@@ -341,21 +350,25 @@ function VoxelMaterial({ size, tone }: { size: [number, number, number]; tone?: 
   );
 }
 
-/** One voxel block. `size` should be whole multiples of CELL. */
+/** One voxel block. `size` should be whole multiples of `cell`. */
 export function VoxelBox({
   size,
   position,
   tone,
+  cell,
 }: {
   size: [number, number, number];
   position: [number, number, number];
   /** Fill colour when lit; defaults to the accent. */
   tone?: string;
+  /** Voxel size for the grid lines (metres); defaults to CELL. Smaller
+      voxels let one item carry finer detail, like the bag's print. */
+  cell?: number;
 }) {
   return (
     <mesh position={position}>
       <boxGeometry args={size} />
-      <VoxelMaterial size={size} tone={tone} />
+      <VoxelMaterial size={size} tone={tone} cell={cell} />
     </mesh>
   );
 }
