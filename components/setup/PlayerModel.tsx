@@ -206,6 +206,8 @@ const BAG_BACK_Z = -0.5;
 const HANDLE_POSTS = [5, 9];
 const HANDLE_RISE = 4;
 
+const reverseRow = (row: string) => [...row].reverse().join("");
+
 function bagBoxes() {
   const top = BAG_FRONT.length * BAG_CELL;
   const handle = (z: number) => [
@@ -229,7 +231,9 @@ function bagBoxes() {
     />,
   ];
   return [
-    ...paintRows(BAG_FRONT, BAG_TONES, {
+    // The model is mirrored in x (see the root group), so the camera-side
+    // face is painted reversed to read the right way round...
+    ...paintRows(BAG_FRONT.map(reverseRow), BAG_TONES, {
       x0: BAG_X,
       y0: 0,
       z: BAG_FRONT_Z,
@@ -243,11 +247,14 @@ function bagBoxes() {
       depth: 2,
       cell: BAG_CELL,
     }),
-    ...paintRows(
-      BAG_FRONT.map((row) => [...row].reverse().join("")),
-      BAG_TONES,
-      { x0: BAG_X, y0: 0, z: BAG_BACK_Z, depth: 1, cell: BAG_CELL },
-    ),
+    // ...and the far face, seen from behind, as drawn.
+    ...paintRows(BAG_FRONT, BAG_TONES, {
+      x0: BAG_X,
+      y0: 0,
+      z: BAG_BACK_Z,
+      depth: 1,
+      cell: BAG_CELL,
+    }),
     // zip pullers, one each side of the middle
     <VoxelBox
       key="puller-a"

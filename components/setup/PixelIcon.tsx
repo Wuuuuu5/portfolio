@@ -125,19 +125,27 @@ const ICONS: Record<EquipmentId, string[]> = {
     "ssssssssssssss",
     "ssssssssssssss",
   ],
-  // k black, B blue panel, w white logo / pinstripes, p purple, c camo, z zip
+  // Same print as the 3D bag (BAG_FRONT in PlayerModel.tsx), handle on top.
+  // k black, B blue panel, w white logo / pinstripes, p purple, c camo, s zip pullers
   bag: [
-    ".....kkkkkk.....",
-    ".....k....k.....",
-    "....kkkkkkkk....",
-    ".zzzzzzzzzzzzzz.",
-    "kBBBBBBBBBcpkpck",
-    "kBBBBBBBBBBwcpkk",
-    "kBwBwwwwwwBBwcpk",
-    "kBBBwwwwwwBBBwck",
-    "kBBBBBBBBBBBBBpk",
-    "kBBBBBBBBBBBBBBk",
-    ".kkkkkkkkkkkkkk.",
+    "..........kkkkkkkkkk..........",
+    "..........kk......kk..........",
+    "..........kk......kk..........",
+    "..........kk.s..s.kk..........",
+    "..kkkkkkkkkkkkpkkkpkcwkwkkkp..",
+    ".kkkkkkkkkkkkkckkpkkkpwcwkpkk.",
+    "kBBBBBBBBBBBBBBBBBBBBBkwpwckkk",
+    "kBBBBBBBBBBBBBBBBBBBBBBpwkwpkk",
+    "kBBBBBBBBBBBBBBBBBBBBBBBkwpwkk",
+    "kBBBBBBBBBBBBBBBBBBBBBBBBkwkwk",
+    "kBBBBBBBBBBBBBBBBBBBBBBBBBkpkk",
+    "kBBBBwwBwBwBwwwBwBwBwwwBwBwkkk",
+    "kBBBwwBBwBwBwBwBwwwBwBBBwBwBkk",
+    "kBwwBwBBBwBBwBwBwwwBwwBBBwBBBk",
+    "kBwwBBBBBwBBwBwBwBwBwBBBwBwBBk",
+    "kBBBBBBBBwBBwwwBwBwBwwwBwBwBBk",
+    ".BBBBBBBBBBBBBBBBBBBBBBBBBBBB.",
+    "..kkkkkkkkkkkkkkkkkkkkkkkkkk..",
   ],
 };
 
@@ -172,7 +180,7 @@ const ITEM_FILL: Partial<Record<EquipmentId, Record<string, string>>> = {
     w: kitColours.bag.white,
     p: kitColours.bag.purple,
     c: kitColours.bag.camo,
-    z: kitColours.bag.zip,
+    s: kitColours.bag.puller,
   },
 };
 
