@@ -21,7 +21,7 @@ export default function Loader() {
       aria-hidden="true"
     >
       <div className="relative grid justify-items-center gap-[1.15rem] px-[var(--gutter)]">
-        <Shuttle className="h-auto w-[34px] animate-serve text-accent drop-shadow-[0_0_14px_var(--glow)]" />
+        <Shuttle className="h-auto w-[34px] animate-serve text-accent" />
 
         <div className="flex overflow-hidden font-mono text-[clamp(1.1rem,4vw,1.6rem)] tracking-[-0.02em]">
           {letters.map((char, i) => (

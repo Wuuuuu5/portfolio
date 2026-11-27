@@ -96,7 +96,7 @@ export default function NameSwap() {
         }`}
       >
         <Shuttle
-          className={`block size-[0.42em] text-accent drop-shadow-[0_0_14px_var(--glow)] ${
+          className={`block size-[0.42em] text-accent ${
             flight
               ? flight.dir === "right"
                 ? "animate-arc-right"
